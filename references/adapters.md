@@ -1,35 +1,39 @@
 # 런타임 어댑터 — 실행 환경별 로컬라이즈 지점
 
-코어 스킬은 런타임 중립이다. 특정 에이전트 제품에 묶인 값(호출 접두어·턴 예산·관례 경로·동반 스킬)은 전부 이 파일에서만 다룬다. **레포를 포크한 뒤 자기 환경 값을 아래 아키타입에 채워 넣어라** — 코어 파일은 수정하지 않는다.
+코어 스킬은 런타임 중립이다. 특정 에이전트 제품에 묶인 값(설치 위치, 호출 접두어, 모델 선택, per-role routing 지원 여부)은 전부 이 파일에서만 다룬다. 코어 파일은 `prime`/`planner`/`worker`/`critic`과 capability label만 쓴다.
 
-## 아키타입 A — 스킬 자동 발견형 에이전트
+## 공통 코어 참조
 
-skills 디렉토리를 스캔해 SKILL.md frontmatter로 스킬을 발견하는 런타임.
+역할 책임과 capability 선택은 [model-playbooks.md](model-playbooks.md) §역할·권한 라우팅이 유일한 정본이다. 이 파일은 설치 위치, 런타임 역할 매핑, 실제 모델 선택 위치, per-role routing이 없을 때의 fallback만 기록한다. 실제 모델명과 로컬 선택값은 각 런타임의 설정 파일, CLI 옵션, 또는 사용자의 세션 설정에 두며 private local selector를 하드코딩하지 않는다.
 
-- 설치: 런타임의 스킬 검색 디렉토리에 이 레포를 클론(또는 심링크). 예: `<skills-dir>/master-prompt-writer/`.
-- GOAL 산출물: 첫 사용자 메시지로 붙여넣거나 자율 실행 하네스에 투입.
-- 동반 스킬 매핑: 이미지 정밀 컴파일은 내장(references/image/)이라 동반 스킬이 필요 없다. 문서 조판 스킬이 설치돼 있으면 Tie-break ③이 활성화된다.
+## Claude
 
-## 아키타입 B — goal 루프형 런타임
+- 설치/발견: `npx --yes github:HeiTuz/master-prompt-writer --target claude` 또는 `git clone <repo> ~/.claude/skills/master-prompt-writer`.
+- 역할 매핑: 단일 Claude 세션이면 prime이 기본이다. 하위 에이전트나 task 기능이 있으면 planner는 read-only 조사, worker는 bounded edit/research, critic은 frozen artifact review로 보낸다.
+- 모델 선택 위치: Claude 앱/CLI/프로젝트 설정. 이 저장소에는 모델명이나 plan 이름을 쓰지 않는다.
+- fallback: per-role 모델 라우팅이 없으면 같은 세션에서 역할 헤더만 바꾼다. worker 결과는 prime이 다시 읽고 검증한다.
 
-goal 텍스트를 받아 무인 자율 루프를 돌리고, 판정자가 완료를 심사하는 런타임.
+## GPT/Codex
 
-- 채울 값: 호출 접두어(예: `/goal`), 후속 기준 추가 명령(예: `/subgoal`), 턴 예산(예: 20턴), 판정자 가시 범위(예: goal 앞부분+최종 응답).
-- GOAL 골격의 "판정자는 앞부분+최종 보고만 본다"와 "턴 예산 스코프"가 이 값들로 구체화된다.
-- 주의: goal 본문이 런타임 제어어(예: `status`/`pause`/`stop`)와 단독으로 겹치면 충돌 — 해당 런타임의 예약어를 여기 기록해 둔다.
+- 설치/발견: `npx --yes github:HeiTuz/master-prompt-writer --target codex` 또는 `--target gpt`; 둘 다 `~/.codex/skills/master-prompt-writer`에 설치한다.
+- 역할 매핑: Codex coding surface는 prime으로 운용한다. native subagent가 있으면 planner=read-only planning/research, worker=bounded implementation, critic=independent verifier로 할당한다.
+- 모델 선택 위치: Codex profile, model picker, CLI config, or API caller configuration. 공개 routing vocabulary는 fast/read-only, balanced/agentic, strongest-reasoning/high-risk만 쓴다.
+- fallback: subagent/per-role model routing이 없으면 prime 단일 세션이 topology-first intake, decomposition, implementation, and surface-matched verification을 순서대로 수행한다.
 
-## 아키타입 C — 팀/멀티에이전트 런타임
+## Hermes
 
-리더+워커 레인을 띄우는 런타임.
+- 설치/발견: 기본 installer target은 Hermes다. `npx --yes github:HeiTuz/master-prompt-writer` 또는 `--target hermes`는 `~/.hermes/skills/prompt-writing/master-prompt-writer`에 설치한다.
+- 역할 매핑: Hermes skill invocation이 prime이다. Hermes에 planner/worker/reviewer skill 또는 agent lane이 있으면 core 역할에 매핑한다. 로컬 전용 경로나 동반 workflow 이름은 공개 core로 올리지 않는다.
+- 모델 선택 위치: Hermes runtime config. 이 저장소는 로컬 선택값이나 채널 선택값을 쓰지 않는다.
+- fallback: role lanes가 없으면 Hermes prime이 단일 실행 계약을 산출하고, critic 역할은 최종 self-check checklist로 축소한다.
 
-- 채울 값: 팀 실행 접두어(예: `/skill:team`), 요구 구체화 인터뷰 명령(있다면). 오버플로우 경로는 런타임 불문 `/tmp/prompt-handoffs/<slug>.md` 고정(재부팅 휘발 강제 — SKILL §길이 계약)이라 채울 값이 아니다.
-- templates §TEAM 골격의 첫 줄 `<팀 실행 호출>`에 접두어를 채우면 그대로 붙여넣기 가능해진다.
+## GJC
 
-## 아키타입 D — 챗 UI / API (스킬 시스템 없음)
-
-- SKILL.md 전문을 시스템 프롬프트로 넣고, references는 요청 유형에 맞는 섹션만 이어붙인다(전부 넣으면 컨텍스트 낭비).
-- 파일 접근이 없으므로 templates §수신자·채널 적응의 "타 LLM 챗 UI" 행이 항상 적용된다 — 경로 참조 금지, 자료 인라인.
+- 설치/발견: `npx --yes github:HeiTuz/master-prompt-writer --target gjc` 또는 `git clone <repo> ~/.gjc/agent/skills/master-prompt-writer`.
+- 역할 매핑: active coding agent is prime. Built-in role agents map naturally: planner/architect → `planner`, worker/executor → `worker`, critic/verifier → `critic`. The prime/integrator remains responsible for state, joins, final verification, and completion claim.
+- 모델 선택 위치: GJC settings outside this repo. Do not hardcode backend IDs, local selector names, session lifecycle details, or workflow CLI verbs in public core prompts.
+- fallback: if role-agent routing is unavailable, run the shared core as one prime session and use explicit role sections in the generated prompt.
 
 ## 어댑터 작성 규칙
 
-아키타입당 4항목만 기록한다: ① 설치/로드 방법 ② 호출 접두어와 턴/판정 파라미터 ③ 오버플로우 관례 경로 ④ 동반 스킬 매핑. 코어 규칙을 복사하지 않는다 — 코어와 충돌하는 어댑터 문장은 무효다.
+아키타입당 4항목만 기록한다: ① 설치/로드 방법 ② 역할 매핑 ③ 실제 모델 선택 위치 ④ per-role routing unavailable fallback. 코어 규칙을 복사하지 않는다. 코어와 충돌하는 어댑터 문장은 무효다.

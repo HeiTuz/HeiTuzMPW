@@ -1,29 +1,86 @@
-# 모델 플레이북 (표면층) — 요약판
+# 모델 플레이북 (표면층) — Capability-first
 
-**이 요약판이 운영 정본이다.** 여기 없는 모델 능력·API 플래그를 지어내지 않는다.
+**이 요약판이 운영 정본이다.** 모델명은 공개 라우팅 어휘가 아니다. 먼저 역할 권한을 정하고, 실제 모델·프로필 선택은 런타임 어댑터 또는 사용자 환경 설정에 둔다. 여기 없는 모델 능력·API 플래그를 지어내지 않는다.
 
-**주장 검증 스탬프: 2026-07-07.** 아래 모델 행동 주장(Stop Rules 반응, Claude 추론 복사 hard refusal, Gemini temperature 1.0 미만 열화, gpt-image-2 네거티브 렌더링, Higgsfield 프리셋 우선)은 전부 이 시점 기준 실측/공식 문서 근거다. 스탬프로부터 6개월 이상 지났거나 모델 메이저 버전이 바뀌었으면, 해당 주장을 단정하지 말고 재검증 후 이 스탬프를 갱신한다.
+**라우팅 계약 검토: 2026-07-10.** 아래 코어는 특정 공급자 우열 주장이 아니다. 모델별 행동 차이는 맨 아래 dated compatibility note에만 두고, 이미지/영상 엔진 주장은 templates/image 계층의 dated note가 이긴다. 각 노트의 날짜로부터 6개월 이상 지났거나 해당 런타임 메이저 버전이 바뀌었으면 재검증 전까지 단정하지 않는다.
+
+## 역할·권한 라우팅
+
+| 역할 | 권한 | 대표 작업 | 최소 capability |
+|---|---|---|---|
+| `prime` / integrator | 결과 소유, 결정, 상태, 통합, 최종 검증, 완료 claim | 전체 goal, 다중 레인 통합, release 판정 | balanced/agentic 기본; 고위험·광역 통합만 strongest-reasoning/high-risk |
+| `planner` / architect | 읽기 전용 범위 파악, 옵션, 의존성, 위험, 수용 기준 설계 | 사전 조사, 경계 설계, acceptance matrix | bounded fact map은 fast/read-only; 아키텍처·고위험 판단은 strongest-reasoning/high-risk |
+| `worker` / executor | 명시 목표와 acceptance가 있는 bounded slice 실행 | 파일 1~5개 구현, 자료 조사, fixture 작성 | 기계적 변환은 fast/read-only; 쓰기·도구 실행은 balanced/agentic |
+| `critic` / verifier | frozen artifact와 같은 계약을 독립 검토 | code review, prompt review, release gate | bounded review는 balanced/agentic; release·보안·광역 검토는 strongest-reasoning/high-risk |
+
+라우팅 원칙:
+
+1. **권한을 만족하는 가장 낮은 capability**를 쓴다. 역할은 권한이고 capability는 난이도다. 특정 역할을 특정 강도에 영구 고정하지 않는다.
+2. `prime`은 상태·결정·통합·최종 claim을 소유한다. worker가 "완료"를 주장해도 prime이 같은 표면으로 검증하기 전에는 완료가 아니다.
+3. `planner`와 `critic`은 기본 read-only다. 둘 다 쓰는 경우 같은 frozen artifact와 같은 계약을 보게 하고, 둘 다 돌아온 뒤 prime이 결론을 합친다.
+4. `worker`는 target, scope, acceptance, non-goals가 명시된 slice만 받는다. 누락된 acceptance를 worker에게 추론시키지 않는다.
+5. per-role routing이 없는 런타임은 같은 모델에 역할 헤더만 붙인다. 역할 권한은 유지하고 모델명 고정은 하지 않는다.
+
+## 구조·분해 규칙
+
+### Topology-first intake
+
+작업이 여러 산출물·레인·컴포넌트를 가질 수 있으면 깊게 들어가기 전에 최상위 결과 목록부터 확정한다. 가장 잘 설명된 컴포넌트 하나가 형제 scope를 가리면 실패다.
+
+프롬프트에 넣을 축약 문장:
+
+```text
+먼저 최상위 결과/컴포넌트 목록을 1회 열거하고, 누락된 형제가 없는지 확인한 뒤 각 항목의 acceptance를 채운다. 한 항목의 세부가 충분하다는 이유로 다른 항목의 scope를 생략하지 않는다.
+```
+
+### Validation-coupled decomposition
+
+같은 acceptance/review 표면을 공유하는 일은 함께 둔다. 병렬화는 파일이 나뉘는지가 아니라 **검증이 독립적인지**로 판단한다.
+
+| 같이 둔다 | 나눠도 된다 |
+|---|---|
+| 같은 API 계약을 바꾸는 구현+테스트 | 독립 문서/fixture 작성 |
+| 한 UI 화면의 상태·스타일·접근성 | 서로 다른 페이지나 독립 컴포넌트 |
+| 하나의 release claim에 묶인 버전·README·installer | 각 런타임 install smoke |
+| 같은 schema를 읽고 쓰는 producer/consumer | read-only 조사와 bounded implementation |
+
+### Join gate
+
+독립 레인이 있으면 prime은 아래 join gate 전에는 최종 승인하지 않는다.
+
+```text
+Join gate: 모든 worker 산출물, planner risk note, critic/verifier review가 같은 frozen artifact 기준으로 도착한 뒤에만 통합 판단을 내린다. 누락 레인이 있으면 완료가 아니라 pending/blocker다.
+```
+
+## Blocker classification
+
+에스컬레이션은 human-only blocker에만 쓴다. 아래 표를 프롬프트에 맞게 압축해 넣는다.
+
+| 분류 | 처리 |
+|---|---|
+| Resolvable | 파일 누락, 테스트 실패, 불명확한 내부 구현 선택, 재현 실패 초기 단계 → 탐색·대체 접근·최소 재현을 계속 |
+| Scope-changing | 공개 API 변경, 비용/외부 호출, 데이터 삭제, product 방향 양자택일 → 선택지와 영향 정리 후 보고 |
+| Human-only | 비밀값, 계정 권한, 승인 필요한 외부 발신, 사용자가 가진 원본 자료, 결과를 가르는 취향 결정 → 멈춰 질문 |
+
+## Surface-matched evidence
+
+검증 증거는 claim의 표면과 폭을 맞춘다.
+
+| Claim | 맞는 증거 |
+|---|---|
+| CLI/installer가 작동한다 | 실제 명령 실행, 설치 위치의 파일 존재, help/error path |
+| Web UI가 작동한다 | 실제 브라우저 조작, 콘솔/스크린샷/뷰포트 |
+| API가 작동한다 | live process에 curl 또는 driver script |
+| Prompt contract가 개선됐다 | fixture/길이/린트 + 예시 산출물이 새 규칙을 통과 |
+| Release-ready다 | version sync, lint/test/smoke, public scan, diff check |
 
 ## 공통 배치 규칙
 
 - 최우선 지시는 앞 또는 뒤, 벌크 자료는 중간, 긴 프롬프트는 자료 뒤 요구 재진술.
 - 구조화 출력: 플랫폼에 JSON-schema 기능이 있으면 그걸 쓴다고 명시, 없으면 정확한 스키마+null-on-missing+필드 추가 금지를 프롬프트에.
-- reasoning-effort 레버가 있으면 프롬프트 우회보다 레버를 올린다.
-
-## 모델별
-
-- **GPT-5.6 tier routing** — 가장 싼 tier가 아니라 **요구 권한을 만족하는 가장 낮은 tier**를 고른다. Luna는 빠른 분류·요약·읽기 전용·제안 전용·경량 agentic 작업, Terra는 범위가 닫힌 일반 코딩·리서치·표준 검증이 있는 agentic 작업, Sol은 모호한 다단계 CLI·보안/비밀·여러 정본을 건드리는 통합·실패 복구·최종 판정에 쓴다. 결정론적 `no_agent` 스크립트가 이미 해결하는 일에 Luna를 억지로 넣지 않는다. Terra가 검증/ack를 반복 실패하거나 위험·영향 범위가 커질 때만 Sol로 승격한다. (2026-07-10 공개 tier 설명 + `openai-codex` Luna/Terra 실호출 확인.)
-- **GPT-5.6-sol (flagship lane)** — outcome-first Markdown 헤더 골격은 GPT-5.5와 동일. 운용 초점은 결과 우선·최소 스캐폴딩이다: 결과·경계·검증만 계약하고 how 단계 나열 금지. `reasoning_effort=xhigh`인 런타임에서는 "think harder"·추론 과정 응답 공개 요구·긴 단계 강제를 반복하지 않는다(중복 지시는 노이즈; reasoning-effort 레버가 있으면 프롬프트 우회 대신 레버를 쓴다). Tool stop rule: 툴 결과마다 "핵심 요구에 지금 답할 수 있는가" 셀프체크 후 답 가능하면 멈춘다 — 불확실성을 실제로 줄일 때만 추가 탐색. 독립 읽기는 병렬 호출. 장문 컨텍스트는 최우선 요구를 자료 앞·뒤 앵커로 재진술해 보존. 검증된 결과에서 멈춘다(과잉 재확인 금지). (2026-07-10 로컬 운용 기준 — 프롬프트 운용 관례이며 측정된 모델 능력 주장이 아니다.)
-- **GPT-5.5 (호환/레거시)** — outcome-first Markdown: `Role / # Personality / # Goal / # Success Criteria / # Constraints / # Output / # Stop Rules`. Stop Rules가 핵심: 툴 결과마다 "핵심 요구에 지금 답할 수 있는가" 셀프체크 + 검색 예산(광역 1회, 재검색은 필수 사실 누락 시만). GPT-5.6 tier가 선택된 프로필에는 위 routing과 해당 tier 계약을 적용하되, 5.5 자체의 effort 설정은 추정하지 않는다.
-- **GPT-5.2/5.4 레거시** — XML 블록. 항상 `<output_verbosity_spec>`, 필요 시 `<uncertainty_and_ambiguity>` `<tool_usage_rules>` `<extraction_spec>` `<high_risk_self_check>`. 이 블록 어휘를 다른 모델에 이식 금지. 명시적 단계 나열이 잘 먹히는 예외 모델.
-- **GPT-5.x-Codex** — less is more: 짧게, 프리앰블 요구 금지, 최소 스캐폴딩, "기존 프로젝트 패턴 따르고 실제 변경을 검증하라".
-- **Claude 현행(Fable 5 / Opus 4.8)** — 행동 목록 나열 역효과: 행동당 짧고 정확한 지시 1개. 해석이 리터럴 → 범위 명시("첫 섹션만이 아니라 모든 섹션") + 이유 동반. 4.x 프롬프트 이식 시 과잉 스캐폴딩 삭제가 곧 마이그레이션. CRITICAL/MUST/NEVER 스택 금지(1회+이유). 컨텍스트 카운트다운 노출 금지. **추론 과정을 응답에 복사하라는 요구 금지**(hard refusal 유발) — 필요하면 "결론의 근거를 간단히".
-- **Claude 4.x 레거시** — 모든 기대 행동 명시, XML 태그로 지시/컨텍스트/예시 분리, 제약엔 이유. 예시 민감 → 규칙과 대조 감사. 긴 문서는 지시 위, 질문은 문서 뒤 반복. 에이전트엔 `<default_to_action>` 또는 보수적 대응물.
-- **Gemini** — 제약 먼저 → 작업 → 컨텍스트 → 출력 형식, 구조 일관 유지. temperature 기본 1.0 유지(내리면 3.x 루프/열화).
-- **소형 로컬(Gemma급)** — 프롬프트당 작업 1개, 짧고 리터럴, 고정 출력 템플릿, 추론/셀프리뷰 메타지시 금지(판단은 호출 하네스로).
-- **영상** — 정본은 templates.md §영상 공통 규칙(스토리보드 선행·씬당 지배 모션 1개·명사 나열 네거티브·비영어 대사 영어 지문). 이 파일엔 중복 서술하지 않는다.
-- **이미지 모델 차이** — GPT Image 2·Nano Banana Pro: 속성 체크리스트형 OK. NanoBanana2(Gemini Flash Image): 서사 산문형(피사체/행동/환경/무드/카메라), 태그 나열 안티패턴, 이미지 내 한글/CJK 200~300자 이하로 분할. Higgsfield Soul: 프리셋 우선+1문단 서술, 텍스트 렌더 비신뢰 — 레인 규칙은 templates.md §IMAGE.
-- **슬라이드** — 아웃라인 먼저(장수·서사·밀도·청중). 슬라이드 이미지: 16:9, 덱 전체 공유 스타일 블록(HEX·배경·타이포), 폰트명 대신 외형 서술("bold geometric sans"), 슬라이드당 메시지 1개.
+- reasoning-effort 같은 런타임 레버가 있으면 프롬프트 우회보다 레버를 올린다. 레버명이 런타임 고유라면 adapters.md에만 둔다.
+- outcome-first 모델/런타임에는 "더 깊게 생각해" 반복, 추론 과정 공개 요구, 긴 how 단계 강제를 피한다. 결과·경계·검증만 계약한다.
+- 리터럴하게 해석하는 런타임에는 범위("첫 섹션만이 아니라 모든 섹션")와 이유를 짧게 붙인다.
 
 ## 목적 블록 (토큰 값어치 할 때만)
 
@@ -32,3 +89,19 @@
 - Grounded/RAG: knowledge cutoff+현재 날짜 명시, 제공 컨텍스트로 답 제한, 누락 정보 시 행동 정확 지정("정보 없음이라고 답하라") — 미지정 시 모델 지식이 샌다.
 - 추출: 정확한 스키마, null-on-missing, 필드 추가 금지.
 - 에이전트: 툴 지속성, 독립 읽기 병렬화, 빈 결과 복구, 최종 검증. 장기 실행엔 진행 그라운딩: "진행 보고 전 각 주장을 이 세션의 툴 결과와 대조, 증거를 지목할 수 있는 작업만 보고, 미검증은 미검증이라고 명시, 테스트 실패는 출력과 함께 보고."
+- 영상: 정본은 templates.md §영상 공통 규칙(스토리보드 선행·씬당 지배 모션 1개·명사 나열 네거티브·비영어 대사 영어 지문). 이 파일엔 중복 서술하지 않는다.
+- 슬라이드: 아웃라인 먼저(장수·서사·밀도·청중). 슬라이드 이미지: 16:9, 덱 전체 공유 스타일 블록(HEX·배경·타이포), 폰트명 대신 외형 서술("bold geometric sans"), 슬라이드당 메시지 1개.
+
+## 호환 노트
+
+구체 모델명·공급자명·프로필명은 실제 프롬프트 동작 차이를 보존하는 dated note에서만 쓴다. 공개 canonical routing vocabulary로 승격하지 않는다. 런타임별 설치와 역할 매핑은 [adapters.md](adapters.md)가 유일한 표면이다.
+
+### 2026-07-07 — Claude 계열
+
+- 범위를 리터럴하게 해석하므로 영향 범위와 이유를 짧게 함께 쓴다. `CRITICAL`/`MUST`/`NEVER`를 겹쳐 세우지 않는다.
+- 비공개 추론 과정이나 chain-of-thought를 응답에 복사하라고 요구하지 않는다. 대신 결론의 근거를 짧게 요구한다.
+
+### 2026-07-10 — GPT/Codex 계열
+
+- outcome-first·최소 스캐폴딩을 쓴다. 결과·경계·검증·stop rule을 계약하고, 장황한 how나 "더 깊게 생각해" 반복은 제거한다.
+- effort 레버가 있으면 프롬프트로 우회하지 않는다. 코딩 작업은 기존 프로젝트 패턴, 작은 diff, 실제 실행 검증을 요구한다.

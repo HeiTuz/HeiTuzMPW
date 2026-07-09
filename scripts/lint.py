@@ -15,13 +15,15 @@ Checks the skill's own hardlines against its files:
 - YAML frontmatter parses and carries version + model_claims_reviewed_at
 - no Cyrillic/Greek lookalike letters
 - canonical rules defined exactly once (gate necessity test, non-inferable slot list)
+- package.json version matches SKILL.md frontmatter version
+- runtime/model names stay out of core prompt files except image/video engine names
 - Tier-2 frozen strings byte-identical 3-way: editorial-fashion.md §2 code blocks
   (SSOT) == compiler.md §2 inline copy == check_prompt.mjs TAIL/ANCHORS constants
 
 Exit 0 on pass, 1 on any failure. No dependencies beyond PyYAML (optional:
 falls back to a minimal frontmatter parse when PyYAML is missing).
 """
-import re, sys, unicodedata, pathlib
+import json, re, sys, unicodedata, pathlib
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 FILES = ["SKILL.md", "references/templates.md", "references/model-playbooks.md", "references/adapters.md",
@@ -147,15 +149,26 @@ def main():
         errors.append("SKILL.md: no frontmatter")
     else:
         fm = m.group(1)
+        skill_version = None
         try:
             import yaml
             d = yaml.safe_load(fm)
-            if not d.get("version"): errors.append("frontmatter: version missing")
+            skill_version = d.get("version")
+            if not skill_version: errors.append("frontmatter: version missing")
             if not d.get("metadata", {}).get("model_claims_reviewed_at"):
                 errors.append("frontmatter: model_claims_reviewed_at missing")
         except ImportError:
-            if "version:" not in fm: errors.append("frontmatter: version missing")
+            vm = re.search(r"^version:\s*([^\n]+)", fm, re.M)
+            skill_version = vm.group(1).strip().strip('"') if vm else None
+            if not skill_version: errors.append("frontmatter: version missing")
             if "model_claims_reviewed_at" not in fm: errors.append("frontmatter: model_claims_reviewed_at missing")
+
+        try:
+            pkg_version = json.loads((ROOT / "package.json").read_text(encoding="utf-8")).get("version")
+            if skill_version and pkg_version != skill_version:
+                errors.append(f"version mismatch: package.json {pkg_version} != SKILL.md {skill_version}")
+        except Exception as e:
+            errors.append(f"package.json version check failed: {e}")
 
     tm = texts.get("references/templates.md", "")
 
@@ -186,6 +199,20 @@ def main():
         errors.append("gate necessity test must be defined exactly once in SKILL.md")
     if tm.count("질문이 정당한 유일 목록 (정본)") != 1:
         errors.append("non-inferable slot canon must appear exactly once in templates.md")
+
+    core_runtime_names = {
+        "SKILL.md": [r"\bClaude\b", r"\bCodex\b", r"\bHermes\b", r"\bGJC\b", r"\bSol\b", r"\bTerra\b", r"\bLuna\b", r"\bOpus\b", r"\bSonnet\b"],
+        "references/templates.md": [r"\bClaude\b", r"\bCodex\b", r"\bHermes\b", r"\bGJC\b", r"\bSol\b", r"\bTerra\b", r"\bLuna\b", r"\bOpus\b", r"\bSonnet\b"],
+        "references/model-playbooks.md": [r"\bClaude\b", r"\bCodex\b", r"\bHermes\b", r"\bGJC\b", r"\bSol\b", r"\bTerra\b", r"\bLuna\b", r"\bOpus\b", r"\bSonnet\b"],
+    }
+    for f, pats in core_runtime_names.items():
+        scan_text = texts[f]
+        if f == "references/model-playbooks.md":
+            scan_text = scan_text.split("\n## 호환 노트", 1)[0]
+        for pat in pats:
+            m = re.search(pat, scan_text)
+            if m:
+                errors.append(f"{f}:{line_of(scan_text, m.start())}: runtime/model name belongs in references/adapters.md or dated compatibility notes, not core ({m.group(0)})")
 
     # Tier-2 동결 문자열 3자 byte 대조
     check_frozen_strings(texts, errors)

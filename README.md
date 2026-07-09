@@ -7,21 +7,21 @@
 [![License: MIT](https://img.shields.io/badge/license-MIT-black?style=flat-square)](LICENSE)
 
 **master-prompt-writer**는 거친 요청 한 줄을 에이전트가 실제 결과와 검증까지 끝내는 프롬프트로 바꿉니다.
-할 일 목록으로 끝내지 않습니다. 결과물, 완료 기준, 자율 범위, 검증, 중단 조건을 한 번에 잠급니다.
+할 일 목록에서 멈추지 않습니다. 결과물, 완료 기준, 자율 범위, 검증, 중단 조건을 한 번에 잠급니다.
 
 프롬프트가 결과를 만들지 못하면 아무리 길어도 소음입니다. 이 스킬은 실행에 필요한 것만 남깁니다.
 
 ## 왜 이걸 쓰나요?
 
-흔한 프롬프트는 일단 시작하라는 말에서 끝납니다.
+흔한 프롬프트는 “일단 시작해”에서 끝납니다.
 
 > “알아서 잘 고쳐줘. 꼼꼼하게 확인해줘.”
 
-결과는 뻔합니다. 범위가 흔들리고 검증은 빠진 채, “완료했습니다”라는 말만 남습니다.
+결과는 뻔합니다. 범위는 흔들리고 검증은 빠진 채, “완료했습니다”라는 말만 남습니다.
 
 master-prompt-writer는 모호한 부탁을 실행 계약으로 정리합니다.
 
-- **끝난 모습부터 정합니다.** 무엇을 만들어야 완료인지 먼저 고정합니다.
+- **끝난 모습을 먼저 정합니다.** 무엇을 만들어야 완료인지 먼저 고정합니다.
 - **말이 아니라 증거를 남깁니다.** 경로, 테스트, 개수, 링크처럼 직접 확인할 근거를 요구합니다.
 - **방법은 맡기고 경계만 세웁니다.** 에이전트를 마이크로매니징하지 않아도 범위는 흔들리지 않습니다.
 - **끝낼 때를 분명히 합니다.** 검증을 마치면 멈추고, 막히면 시도한 것과 차단 지점을 남깁니다.
@@ -40,21 +40,32 @@ master-prompt-writer는 모호한 부탁을 실행 계약으로 정리합니다.
 | “이 사진 배경만 파리로” | 인물과 프레임은 보존하는 배경 합성 계약 |
 | “방금 프롬프트 톤만 바꿔” | 나머지는 그대로 두고 지정한 축만 바꾸는 델타 수정 |
 
-코딩과 리서치부터 시스템 프롬프트, 팀 작업지시, 직무 문서, 이미지와 영상까지 같은 원칙으로 다룹니다.
+코딩과 리서치, 시스템 프롬프트, 팀 작업지시, 직무 문서, 이미지와 영상까지 같은 원칙으로 다룹니다.
 
-## GPT-5.6 시대의 모델 라우팅
+## 모델 이름보다 역할을 먼저 고릅니다
 
-가장 비싼 모델부터 부르는 건 실력이 아니라 낭비입니다.
+가장 비싼 모델부터 부르는 건 실력이 아니라 낭비입니다. 먼저 누가 어떤 권한을 가져야 하는지 정합니다.
 
-- **Luna** — 분류, 요약, 읽기 전용, 가벼운 제안
-- **Terra** — 범위가 닫힌 코딩·리서치·표준 검증
-- **Sol** — 다단계 실행, 보안, 여러 정본의 통합, 실패 복구, 최종 판정
+- **prime / integrator** — 결과, 결정, 통합, 최종 검증, 완료 claim
+- **planner / architect** — 읽기 전용 범위 파악, 옵션, 위험, 수용 기준
+- **worker / executor** — 명시된 target과 acceptance가 있는 bounded slice
+- **critic / verifier** — 같은 frozen artifact를 독립 검토
 
-권한과 난이도에 맞는 가장 낮은 tier를 고릅니다. 강한 모델을 쓸 때도 “더 깊게 생각해”를 길게 반복하지 않습니다. 원하는 결과와 검증 기준만 정확히 정합니다.
+그다음 런타임이 가진 가장 낮은 충분 capability를 붙입니다: fast/read-only, balanced/agentic, strongest-reasoning/high-risk. 역할과 모델 강도는 별개입니다. 낮은 위험의 prime은 balanced로도 충분하고, 보안·광역 통합·실패 복구만 strongest로 올립니다. Claude, GPT/Codex, Hermes, GJC 모두 같은 역할 계약을 쓰며, 실제 모델 선택은 각 런타임 설정에 둡니다.
+
+## 복잡한 작업이 무너지지 않게 하는 다섯 규칙
+
+GJC에서 검증된 방식 중 다른 런타임에서도 그대로 통하는 것만 남겼습니다.
+
+- 깊게 들어가기 전에 최상위 결과 목록부터 확정합니다.
+- 파일이 아니라 검증 표면이 독립적일 때만 병렬로 나눕니다.
+- worker에는 target, scope, non-goals, acceptance가 닫힌 일만 맡깁니다.
+- 모든 결과와 리뷰가 같은 frozen artifact를 볼 때만 최종 판정을 냅니다.
+- 증거는 실제 출시 표면에 맞추고, 사람만 풀 수 있는 blocker에서만 멈춥니다.
 
 ## 이미지 프롬프트도 대충 쓰지 않습니다
 
-이미지는 형용사를 늘린다고 나아지지 않습니다. 카테고리, 구도, 조명, 타이포, 비율, 보존 대상이 한 장면 안에서 맞물려야 합니다.
+이미지는 형용사를 늘린다고 좋아지지 않습니다. 카테고리, 구도, 조명, 타이포, 비율, 보존 대상이 한 장면 안에서 맞물려야 합니다.
 
 필요한 범위는 여기까지 담았습니다.
 
@@ -67,7 +78,7 @@ master-prompt-writer는 모호한 부탁을 실행 계약으로 정리합니다.
 
 ## 30초 설치
 
-Hermes에는 바로 설치할 수 있습니다.
+기본값은 Hermes 설치입니다.
 
 ```sh
 npx --yes github:HeiTuz/master-prompt-writer
@@ -79,6 +90,7 @@ bunx github:HeiTuz/master-prompt-writer
 
 ```sh
 npx --yes github:HeiTuz/master-prompt-writer --target codex
+npx --yes github:HeiTuz/master-prompt-writer --target gpt
 npx --yes github:HeiTuz/master-prompt-writer --target claude
 npx --yes github:HeiTuz/master-prompt-writer --target gjc
 npx --yes github:HeiTuz/master-prompt-writer --target agents
@@ -96,7 +108,7 @@ git clone "$REPO" ~/.gjc/agent/skills/master-prompt-writer
 git clone "$REPO" ~/.agents/skills/master-prompt-writer
 ```
 
-스킬 시스템이 없는 챗이나 API에서는 `SKILL.md`를 시스템 프롬프트로 넣고 필요한 reference만 덧붙이세요.
+스킬 시스템이 없는 챗이나 API에서는 `SKILL.md`를 시스템 프롬프트로 넣고 필요한 reference만 붙이세요.
 
 ## 설치 후 바로 써보기
 
@@ -111,15 +123,16 @@ git clone "$REPO" ~/.agents/skills/master-prompt-writer
 ```
 
 ```text
-이 리서치 프롬프트를 GPT-5.6 Terra에 맞게 줄이고, 출처 검증과 중단 조건을 넣어줘.
+이 리서치 프롬프트를 fast/read-only 조사 역할에 맞게 줄이고, 출처 검증과 중단 조건을 넣어줘.
 ```
 
 ## 약속이 아니라 테스트
 
 ```sh
 python3 scripts/lint.py
-node scripts/check_prompt.mjs --test
+npm test
 npm run smoke:install
+npm run smoke:runtime
 ```
 
 - 프롬프트 예시의 실제 글자 수 확인
@@ -134,7 +147,7 @@ npm run smoke:install
 ```text
 SKILL.md                       디스패치 커널
 references/templates.md        모드별 골격과 출력 게이트
-references/model-playbooks.md  모델별 문법과 tier 라우팅
+references/model-playbooks.md  역할·권한 라우팅과 capability 플레이북
 references/image/              이미지 정밀 컴파일 계층
 references/adapters.md         런타임별 설치·호출 어댑터
 scripts/lint.py                스킬 자기 린트

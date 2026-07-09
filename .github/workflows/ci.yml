@@ -13,3 +13,5 @@ jobs:
         run: node scripts/check_prompt.mjs --test
       - name: installer smoke test
         run: npm run smoke:install
+      - name: shared-core runtime adapter smoke
+        run: npm run smoke:runtime

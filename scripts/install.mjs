@@ -11,6 +11,8 @@ const skillName = "master-prompt-writer";
 const targetMap = {
   hermes: path.join(os.homedir(), ".hermes", "skills", "prompt-writing", skillName),
   codex: path.join(os.homedir(), ".codex", "skills", skillName),
+  // `gpt` is a user-facing alias for the GPT/Codex skill surface.
+  gpt: path.join(os.homedir(), ".codex", "skills", skillName),
   claude: path.join(os.homedir(), ".claude", "skills", skillName),
   gjc: path.join(os.homedir(), ".gjc", "agent", "skills", skillName),
   agents: path.join(os.homedir(), ".agents", "skills", skillName),
@@ -21,13 +23,13 @@ function usage(exitCode = 0) {
   out(`master-prompt-writer installer
 
 Usage:
-  npx --yes github:eusine/master-prompt-writer --target hermes
-  bunx github:eusine/master-prompt-writer --target codex
+  npx --yes github:HeiTuz/master-prompt-writer --target hermes
+  bunx github:HeiTuz/master-prompt-writer --target codex
   node scripts/install.mjs --target claude
   node scripts/install.mjs --dest /custom/skills/master-prompt-writer
 
 Options:
-  --target <hermes|codex|claude|gjc|agents>   Install to a known agent skill directory.
+  --target <hermes|codex|gpt|claude|gjc|agents>   Install to a known agent skill directory.
   --dest <path>                               Install to an explicit directory.
   --force                                     Replace an existing destination.
   --quiet                                     Print only errors.
