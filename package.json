@@ -13,13 +13,16 @@
     "LICENSE",
     "README.md",
     "SKILL.md",
+    "contracts/**",
     "examples/**",
     "references/**",
     "scripts/**"
   ],
   "scripts": {
     "lint": "python3 scripts/lint.py",
-    "test": "python3 scripts/test_compile_garden_recipe.py && node scripts/check_prompt.mjs --test",
+    "test": "node scripts/check_prompt.mjs --test && python3 scripts/test_contracts.py && python3 scripts/test_compile_garden_recipe.py",
+    "test:contracts": "python3 scripts/test_contracts.py",
+    "test:compiler": "python3 scripts/test_compile_garden_recipe.py",
     "smoke:install": "node scripts/install.mjs --dest /tmp/master-prompt-writer-install-smoke --force --quiet",
     "smoke:runtime": "node scripts/smoke_runtime_installs.mjs"
   },
