@@ -45,7 +45,7 @@ metadata:
 | 이미지·영상 생성 프롬프트 | **IMAGE** (하위: gpt-image-2 / Higgsfield / 영상) |
 | 원본 사진 피사체 보존 + 배경만 교체 | **IMAGE-COMPOSITE** |
 | UI·페이지·컴포넌트를 만들게 할 프롬프트 | 실행 모드 + **DESIGN 오버레이** |
-| 검증된 `GardenRecipe`를 생성 프롬프트와 기계 핸드오프로 변환 | recipe의 `intended_use.mode` (`IMAGE` / `IMAGE-COMPOSITE` / `DESIGN`) |
+| 검증된 `GardenRecipe`를 생성 프롬프트와 기계 핸드오프로 변환 | recipe의 `intended_use.mode` wire 값 (`IMAGE` / `IMAGE_COMPOSITE` / `DESIGN`; 사람용 레인명은 IMAGE-COMPOSITE) |
 | 직전 산출 프롬프트의 부분 수정 — "톤만 바꿔", "이 줄만 고쳐" | **MODEL-델타** (전체 재작성 금지, 지정 축만) |
 | 다단계 프롬프트 체인 — A의 산출이 B의 입력 | 단계별 모드 각각 + **체인 인터페이스 계약** |
 

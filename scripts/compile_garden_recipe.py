@@ -54,52 +54,151 @@ def _qualified_tokens(recipe: dict[str, Any]) -> list[str]:
     return result
 
 
-def _render_prompt(recipe: dict[str, Any]) -> str:
-    intended = recipe["intended_use"]
-    locks = recipe["locks"]
-    sections: list[str] = [
-        f"Goal: {intended['goal'].strip()}",
-        f"Mode: {intended['mode']}. Target engine: {intended['engine']}.",
-    ]
+def _evidence_lines(recipe: dict[str, Any]) -> list[str]:
     labels = {
-        "subject": "Observed subject",
-        "camera": "Observed camera",
-        "lighting": "Observed lighting",
-        "palette": "Observed palette",
-        "layout": "Observed layout",
+        "subject": "Subject",
+        "camera": "Camera",
+        "lighting": "Lighting",
+        "palette": "Palette",
+        "layout": "Layout",
     }
+    lines: list[str] = []
     for axis, label in labels.items():
         values = _axis_values(recipe, axis)
         if values:
-            sections.append(f"{label}: {'; '.join(values)}.")
+            lines.append(f"{label}: {'; '.join(values)}.")
     tokens = _qualified_tokens(recipe)
     if tokens:
-        sections.append(f"Direction: {'; '.join(tokens)}.")
-    inferences = [item["claim"].strip() for item in recipe["inferences"] if item["confidence"] >= 0.5]
+        lines.append(f"Direction: {'; '.join(tokens)}.")
+    inferences = [item["claim"].strip() for item in recipe["inferences"]]
     if inferences:
-        sections.append(f"Qualified interpretation: {'; '.join(inferences)}.")
-    identity = _strings(locks.get("identity"))
-    subject = _strings(locks.get("subject"))
-    sections.append(
-        "Immutable locks: "
-        + "; ".join([*(f"identity={value}" for value in identity), *(f"subject={value}" for value in subject)])
-        + "."
+        lines.append(f"Qualified interpretation: {'; '.join(inferences)}.")
+    return lines
+
+
+def _lock_line(recipe: dict[str, Any]) -> str:
+    locks = recipe["locks"]
+    values = [
+        *(f"identity={value}" for value in _strings(locks.get("identity"))),
+        *(f"subject={value}" for value in _strings(locks.get("subject"))),
+    ]
+    return "Immutable locks: " + "; ".join(values) + "."
+
+
+def _reference_line(recipe: dict[str, Any]) -> str:
+    return (
+        f"Reference: attach the supplied media identified by opaque ID "
+        f"{recipe['source']['reference_id']} for evidence-backed visual guidance."
     )
-    sections.append(f"Exclude: {'; '.join(_strings(recipe['exclusions']))}.")
-    sections.append(
-        f"Reference requirement: attach opaque reference {recipe['source']['reference_id']} for evidence-backed visual guidance; do not infer a local path from the ID."
+
+
+def _positive_scope_line(recipe: dict[str, Any]) -> str:
+    return (
+        "Composition scope: include only the described subject, scene, typography, and materials; "
+        "keep unmentioned surfaces clean and unbranded while every immutable lock remains stable."
     )
-    sections.append("Return one result that satisfies every immutable lock and exclusion.")
+
+
+def _render_higgsfield(recipe: dict[str, Any]) -> str:
+    sections = [
+        "[Preset: Flash Editorial | Aspect ratio: 4:5 — select in UI]",
+        f"Goal: {recipe['intended_use']['goal'].strip()}",
+        *_evidence_lines(recipe),
+        _lock_line(recipe),
+        _positive_scope_line(recipe),
+        _reference_line(recipe),
+        "Generate one still with a stable subject, coherent lighting, and natural material detail.",
+    ]
     return "\n".join(sections)
 
 
-def _variable_axes(recipe: dict[str, Any]) -> list[dict[str, Any]]:
-    mode = recipe["intended_use"]["mode"]
-    if mode == "DESIGN":
-        return [{"name": "non_locked_responsive_detail", "allowed_values": ["adapt spacing without changing locked hierarchy"]}]
+def _render_gpt_image(recipe: dict[str, Any]) -> str:
+    palette = _axis_values(recipe, "palette")
+    if not 3 <= len(palette) <= 5:
+        raise CompileError(
+            "lane_requirement_missing:gpt-image-2 requires 3-5 observed palette values; "
+            f"received {len(palette)}"
+        )
+    evidence = _evidence_lines(recipe)
+    sections = [
+        f"Core scene: {recipe['intended_use']['goal'].strip()}",
+        *evidence,
+        _lock_line(recipe),
+        _positive_scope_line(recipe),
+        _reference_line(recipe),
+        "Output: one finished, self-contained image with exact subject and layout continuity.",
+        "AR 2:3",
+    ]
+    return "\n".join(sections)
+
+
+def _render_composite(recipe: dict[str, Any]) -> str:
+    sections = [
+        f"Edit operation: {recipe['intended_use']['goal'].strip()}",
+        "Preserve the supplied subject, identity, pose, framing, and all locked attributes exactly.",
+        *_evidence_lines(recipe),
+        _lock_line(recipe),
+        "Relighting dial: low — match only the new environment's light direction and color temperature.",
+        "Unify contact shadow, edge spill, depth cues, and grain across subject and environment.",
+        "Do not crop, resample, beautify, reshape, or replace any locked subject detail.",
+        _reference_line(recipe),
+        "FAIL if framing, identity, subject geometry, or any immutable lock changes.",
+    ]
+    return "\n".join(sections)
+
+
+def _render_design(recipe: dict[str, Any]) -> str:
+    subject = "; ".join(_axis_values(recipe, "subject")) or "the specified interface"
+    layout = "; ".join(_axis_values(recipe, "layout")) or "the observed hierarchy"
+    palette = "; ".join(_axis_values(recipe, "palette")) or "the observed color roles"
+    direction = "; ".join(_qualified_tokens(recipe))
+    sections = [
+        f"Implementation goal: {recipe['intended_use']['goal'].strip()}",
+        f"Direction lock: {direction}. Signature element: {layout}.",
+        "Visual thesis:",
+        f"1. Structure — {subject}; preserve {layout}.",
+        f"2. Tone — {direction}; use {palette}.",
+        f"3. Behavior — responsive adaptation must retain the same hierarchy and locked subjects.",
+        f"Reference decomposition: structure={layout}; tone={direction}; color={palette}.",
+        *_evidence_lines(recipe),
+        _lock_line(recipe),
+        f"Anti-slop constraints: {'; '.join(_strings(recipe['exclusions']))}.",
+        _reference_line(recipe),
+        "Viewport QC: verify hierarchy, clipping, overflow, and spacing at narrow and wide widths.",
+    ]
+    return "\n".join(sections)
+
+
+def _render_generic_image(recipe: dict[str, Any]) -> str:
+    return "\n".join([
+        f"Goal: {recipe['intended_use']['goal'].strip()}",
+        *_evidence_lines(recipe),
+        _lock_line(recipe),
+        _positive_scope_line(recipe),
+        _reference_line(recipe),
+        "Return one result that preserves all evidence-backed attributes.",
+    ])
+
+
+def _render_prompt(recipe: dict[str, Any]) -> str:
+    intended = recipe["intended_use"]
+    mode = intended["mode"]
+    engine = intended["engine"]
     if mode == "IMAGE_COMPOSITE":
-        return [{"name": "non_locked_background_detail", "allowed_values": ["minor detail variation consistent with observed evidence"]}]
-    return [{"name": "non_locked_render_detail", "allowed_values": ["minor detail variation consistent with observed evidence"]}]
+        return _render_composite(recipe)
+    if mode == "DESIGN":
+        return _render_design(recipe)
+    if engine == "gpt-image-2":
+        return _render_gpt_image(recipe)
+    if engine == "higgsfield":
+        return _render_higgsfield(recipe)
+    return _render_generic_image(recipe)
+
+
+def _variable_axes(recipe: dict[str, Any]) -> list[dict[str, Any]]:
+    # GardenRecipe v1 has no explicit unlocked-axis permission. An empty array is
+    # deliberate: the compiler must not invent degrees of freedom around locks.
+    return []
 
 
 def compile_recipe(recipe: dict[str, Any]) -> dict[str, Any]:

@@ -16,9 +16,9 @@ python3 scripts/compile_garden_recipe.py recipe.json --output prompt-bundle.json
 
 - 원본 GardenRecipe의 canonical hash와 recipe ID
 - mode·engine 및 `generation-handoff/v1` 프로토콜
-- Unicode code point 실측값이 붙은 자기완결 prompt block(각각 1~2000자)
+- Unicode code point 실측값이 붙은 자기완결 prompt block(각각 1~2000자); mode/engine에 따라 `templates.md` 레인 게이트 렌더러를 적용
 - GardenRecipe와 byte-for-byte 의미가 같은 immutable identity/subject locks
-- 잠기지 않은 세부만 움직이는 variable axes
+- 명시적으로 허용된 축만 담는 variable axes; GardenRecipe v1에는 unlock 필드가 없으므로 빈 배열
 - exclusions에서 보존한 negative constraints
 - opaque reference ID 기반 reference requirement
 - locks·negative·reference·길이를 검사하는 QC acceptance criteria

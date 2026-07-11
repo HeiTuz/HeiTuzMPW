@@ -41,9 +41,13 @@ class CompileGardenRecipeTests(unittest.TestCase):
         handoff = bundle["handoff"]
         self.assertEqual(self.recipe["locks"], handoff["immutable_locks"])
         self.assertEqual(self.recipe["exclusions"], handoff["negative_constraints"])
-        self.assertTrue(handoff["variable_axes"])
+        self.assertEqual([], handoff["variable_axes"])
         self.assertTrue(handoff["reference_requirements"])
         self.assertTrue(handoff["qc_acceptance_criteria"])
+        text = handoff["prompt_blocks"][0]["text"]
+        self.assertTrue(text.startswith("[Preset: Flash Editorial"))
+        self.assertNotIn("Exclude:", text)
+
 
     def test_design_recipe_routes_from_intended_use(self) -> None:
         recipe = json.loads(DESIGN_FIXTURE.read_text(encoding="utf-8"))
@@ -51,7 +55,52 @@ class CompileGardenRecipeTests(unittest.TestCase):
         self.assertEqual([], self.contracts.validate_document(bundle, recipe))
         self.assertEqual("DESIGN", bundle["handoff"]["mode"])
         self.assertEqual("frontend-agent", bundle["handoff"]["engine"])
-        self.assertEqual("non_locked_responsive_detail", bundle["handoff"]["variable_axes"][0]["name"])
+        self.assertEqual([], bundle["handoff"]["variable_axes"])
+        text = bundle["handoff"]["prompt_blocks"][0]["text"]
+        self.assertIn("Visual thesis:", text)
+        self.assertIn("Reference decomposition:", text)
+        self.assertIn("Viewport QC:", text)
+
+
+    def test_composite_renderer_applies_preservation_gate(self) -> None:
+        recipe = copy.deepcopy(self.recipe)
+        recipe["category"] = "composite_reference"
+        recipe["intended_use"] = {
+            "mode": "IMAGE_COMPOSITE",
+            "engine": "generic-image",
+            "goal": "Replace only the background with a quiet studio environment.",
+        }
+        bundle = self.compiler.compile_recipe(recipe)
+        self.assertEqual([], self.contracts.validate_document(bundle, recipe))
+        text = bundle["handoff"]["prompt_blocks"][0]["text"]
+        self.assertIn("Relighting dial: low", text)
+        self.assertIn("Do not crop, resample", text)
+        self.assertIn("FAIL if", text)
+
+    def test_gpt_image_renderer_requires_palette_gate_and_terminal_ar(self) -> None:
+        recipe = copy.deepcopy(self.recipe)
+        recipe["intended_use"]["engine"] = "gpt-image-2"
+        with self.assertRaisesRegex(self.compiler.CompileError, "requires 3-5 observed palette"):
+            self.compiler.compile_recipe(recipe)
+
+        palette = recipe["observations"]["palette"]["items"]
+        for index, value in ((2, "#2A2520"), (3, "#F2E9DD")):
+            item = copy.deepcopy(palette[0])
+            item["observation_id"] = f"obs_palette_0{index}"
+            item["value"] = value
+            palette.append(item)
+        bundle = self.compiler.compile_recipe(recipe)
+        self.assertEqual([], self.contracts.validate_document(bundle, recipe))
+        text = bundle["handoff"]["prompt_blocks"][0]["text"]
+        self.assertTrue(text.endswith("AR 2:3"))
+        self.assertNotIn("Exclude:", text)
+
+    def test_low_confidence_valid_inference_is_not_dropped(self) -> None:
+        recipe = copy.deepcopy(self.recipe)
+        recipe["inferences"][0]["confidence"] = 0.01
+        claim = recipe["inferences"][0]["claim"]
+        text = self.compiler.compile_recipe(recipe)["handoff"]["prompt_blocks"][0]["text"]
+        self.assertIn(claim, text)
 
     def test_unicode_count_uses_code_points_and_stays_within_limit(self) -> None:
         recipe = copy.deepcopy(self.recipe)
