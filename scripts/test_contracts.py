@@ -44,6 +44,11 @@ class SchemaFixtureTests(unittest.TestCase):
         for name in ("garden-recipe.image.valid.json", "garden-recipe.design.valid.json"):
             self.assertEqual(validate_document(fixture(name)), [], name)
 
+    def test_existing_design_reference_ids_remain_compatible(self) -> None:
+        recipe = fixture("garden-recipe.design.valid.json")
+        recipe["source"]["reference_id"] = "design_ref_20260711_120000_ab12cd34"
+        self.assertEqual(validate_document(recipe), [])
+
     def test_private_source_fixture_is_rejected(self) -> None:
         errors = validate_document(fixture("garden-recipe.private.invalid.json"))
         self.assertTrue(any("forbidden_private_key" in error for error in errors), errors)

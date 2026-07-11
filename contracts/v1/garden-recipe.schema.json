@@ -28,7 +28,7 @@
       "additionalProperties": false,
       "required": ["reference_id", "reference_hash"],
       "properties": {
-        "reference_id": {"type": "string", "pattern": "^ref_[A-Za-z0-9_-]{8,128}$"},
+        "reference_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9_.:-]{2,127}$"},
         "reference_hash": {"$ref": "#/$defs/sha256"}
       }
     },

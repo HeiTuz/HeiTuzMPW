@@ -1,5 +1,4 @@
 {
-  "manifest_version": 1,
   "authority": "master-prompt-writer/contracts",
   "contract_release": "2026-07-11.v1",
   "files": {
@@ -7,8 +6,9 @@
     "v1/fixtures/garden-recipe.image.valid.json": "935c2eca67dc10b07b5e69535d58ab13c2e2e456023943b8910811b08f517329",
     "v1/fixtures/garden-recipe.private.invalid.json": "2b32e2428d21efc9edb219f0f1a943f61b0fd2c987d49aef3db1ea7fd844c7e7",
     "v1/fixtures/prompt-bundle.valid.json": "1cd37377e2cc33f828997953f17258ea53938c8af883e590d89cd11c22151f65",
-    "v1/garden-recipe.schema.json": "639154694e969e3659fd5d7bb16021d60e7154c7428b44f1a93421dd44910a58",
-    "v1/prompt-bundle.schema.json": "ce1130a060eb8fa86142c7ae927f0df6ab57ea2685f56459f29a9ea5f72ab252",
+    "v1/garden-recipe.schema.json": "67b88c0b45f50954b0d9fbb176a36d853cd5239e50fa4af9bbb3f702f936e6b9",
+    "v1/prompt-bundle.schema.json": "5fd84d4755c5e8dbf75dbbc4b2759c52f3e5cc4bc0143d18fcd0c6355ce7df99",
     "validate.py": "ea3f318ab9075f338abc272923a7cabe6d57c2291dc28b76e1df2688c3657e8d"
-  }
+  },
+  "manifest_version": 1
 }
