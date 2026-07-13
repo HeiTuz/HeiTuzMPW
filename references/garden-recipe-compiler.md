@@ -1,6 +1,6 @@
 # GardenRecipe → PromptBundle 컴파일 계약
 
-이 문서는 Master Prompt Writer의 구조화 컴파일·핸드오프 정본이다. GardenRecipe 필드 정의·개인정보 금지·provenance 검증은 `contracts/` 정본을 참조하며 여기서 반복하지 않는다. 이미지 문장 구성 규칙은 `references/image/compiler.md`, 레인 게이트는 `references/templates.md`가 정본이다.
+이 문서는 HeiTuzMPW의 구조화 컴파일·핸드오프 정본이다. GardenRecipe 필드 정의·개인정보 금지·provenance 검증은 `contracts/` 정본을 참조하며 여기서 반복하지 않는다. 이미지 문장 구성 규칙은 `references/image/compiler.md`, 레인 게이트는 `references/templates.md`가 정본이다.
 
 ## 입력 게이트
 

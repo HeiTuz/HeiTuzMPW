@@ -1,12 +1,12 @@
-# master-prompt-writer
+# HeiTuzMPW
 
 ### 길게 설명하지 마세요. 실행이 끝나는 프롬프트를 쓰세요.
 
-[![Release](https://img.shields.io/github/v/release/HeiTuz/master-prompt-writer?style=flat-square)](https://github.com/HeiTuz/master-prompt-writer/releases/latest)
-[![CI](https://img.shields.io/github/actions/workflow/status/HeiTuz/master-prompt-writer/ci.yml?branch=main&style=flat-square&label=lint)](https://github.com/HeiTuz/master-prompt-writer/actions)
+[![Release](https://img.shields.io/github/v/release/HeiTuz/HeiTuzMPW?style=flat-square)](https://github.com/HeiTuz/HeiTuzMPW/releases/latest)
+[![CI](https://img.shields.io/github/actions/workflow/status/HeiTuz/HeiTuzMPW/ci.yml?branch=main&style=flat-square&label=lint)](https://github.com/HeiTuz/HeiTuzMPW/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-black?style=flat-square)](LICENSE)
 
-**master-prompt-writer**는 거친 요청 한 줄을 에이전트가 실제 결과와 검증까지 끝내는 프롬프트로 바꿉니다.
+**HeiTuzMPW**는 거친 요청 한 줄을 에이전트가 실제 결과와 검증까지 끝내는 프롬프트로 바꿉니다.
 할 일 목록에서 멈추지 않습니다. 결과물, 완료 기준, 자율 범위, 검증, 중단 조건을 한 번에 잠급니다.
 
 프롬프트가 결과를 만들지 못하면 아무리 길어도 소음입니다. 이 스킬은 실행에 필요한 것만 남깁니다.
@@ -19,7 +19,7 @@
 
 결과는 뻔합니다. 범위는 흔들리고 검증은 빠진 채, “완료했습니다”라는 말만 남습니다.
 
-master-prompt-writer는 모호한 부탁을 실행 계약으로 정리합니다.
+HeiTuzMPW는 모호한 부탁을 실행 계약으로 정리합니다.
 
 - **끝난 모습을 먼저 정합니다.** 무엇을 만들어야 완료인지 먼저 고정합니다.
 - **말이 아니라 증거를 남깁니다.** 경로, 테스트, 개수, 링크처럼 직접 확인할 근거를 요구합니다.
@@ -81,31 +81,31 @@ GJC에서 검증된 방식 중 다른 런타임에서도 그대로 통하는 것
 기본값은 Hermes 설치입니다.
 
 ```sh
-npx --yes github:HeiTuz/master-prompt-writer
+npx --yes github:HeiTuz/HeiTuzMPW
 # 또는
-bunx github:HeiTuz/master-prompt-writer
+bunx github:HeiTuz/HeiTuzMPW
 ```
 
 다른 에이전트에 설치하려면 대상만 지정하세요.
 
 ```sh
-npx --yes github:HeiTuz/master-prompt-writer --target codex
-npx --yes github:HeiTuz/master-prompt-writer --target gpt
-npx --yes github:HeiTuz/master-prompt-writer --target claude
-npx --yes github:HeiTuz/master-prompt-writer --target gjc
-npx --yes github:HeiTuz/master-prompt-writer --target agents
+npx --yes github:HeiTuz/HeiTuzMPW --target codex
+npx --yes github:HeiTuz/HeiTuzMPW --target gpt
+npx --yes github:HeiTuz/HeiTuzMPW --target claude
+npx --yes github:HeiTuz/HeiTuzMPW --target gjc
+npx --yes github:HeiTuz/HeiTuzMPW --target agents
 ```
 
 직접 설치하는 방법도 있습니다.
 
 ```sh
-REPO=https://github.com/HeiTuz/master-prompt-writer.git
+REPO=https://github.com/HeiTuz/HeiTuzMPW.git
 
 hermes skills install "$REPO" --category prompt-writing
-git clone "$REPO" ~/.codex/skills/master-prompt-writer
-git clone "$REPO" ~/.claude/skills/master-prompt-writer
-git clone "$REPO" ~/.gjc/agent/skills/master-prompt-writer
-git clone "$REPO" ~/.agents/skills/master-prompt-writer
+git clone "$REPO" ~/.codex/skills/HeiTuzMPW
+git clone "$REPO" ~/.claude/skills/HeiTuzMPW
+git clone "$REPO" ~/.gjc/agent/skills/HeiTuzMPW
+git clone "$REPO" ~/.agents/skills/HeiTuzMPW
 ```
 
 스킬 시스템이 없는 챗이나 API에서는 `SKILL.md`를 시스템 프롬프트로 넣고 필요한 reference만 붙이세요.

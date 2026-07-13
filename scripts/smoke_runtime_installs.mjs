@@ -61,10 +61,10 @@ function checkLinks(dest, rel) {
 }
 
 function destination(home, target) {
-  if (target === "hermes") return path.join(home, ".hermes", "skills", "prompt-writing", "master-prompt-writer");
-  if (target === "claude") return path.join(home, ".claude", "skills", "master-prompt-writer");
-  if (target === "gjc") return path.join(home, ".gjc", "agent", "skills", "master-prompt-writer");
-  return path.join(home, ".codex", "skills", "master-prompt-writer");
+  if (target === "hermes") return path.join(home, ".hermes", "skills", "prompt-writing", "HeiTuzMPW");
+  if (target === "claude") return path.join(home, ".claude", "skills", "HeiTuzMPW");
+  if (target === "gjc") return path.join(home, ".gjc", "agent", "skills", "HeiTuzMPW");
+  return path.join(home, ".codex", "skills", "HeiTuzMPW");
 }
 
 function section(markdown, heading) {

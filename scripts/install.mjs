@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
-const skillName = "master-prompt-writer";
+const skillName = "HeiTuzMPW";
 
 const targetMap = {
   hermes: path.join(os.homedir(), ".hermes", "skills", "prompt-writing", skillName),
@@ -20,13 +20,13 @@ const targetMap = {
 
 function usage(exitCode = 0) {
   const out = exitCode === 0 ? console.log : console.error;
-  out(`master-prompt-writer installer
+  out(`HeiTuzMPW installer
 
 Usage:
-  npx --yes github:HeiTuz/master-prompt-writer --target hermes
-  bunx github:HeiTuz/master-prompt-writer --target codex
+  npx --yes github:HeiTuz/HeiTuzMPW --target hermes
+  bunx github:HeiTuz/HeiTuzMPW --target codex
   node scripts/install.mjs --target claude
-  node scripts/install.mjs --dest /custom/skills/master-prompt-writer
+  node scripts/install.mjs --dest /custom/skills/HeiTuzMPW
 
 Options:
   --target <hermes|codex|gpt|claude|gjc|agents>   Install to a known agent skill directory.

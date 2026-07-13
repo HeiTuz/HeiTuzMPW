@@ -1,7 +1,7 @@
 ---
-name: master-prompt-writer
+name: HeiTuzMPW
 description: "프롬프트 작성·퇴고·라우팅 전용 통합 스킬 — '프롬프트 만들어줘/다듬어줘/검토해줘' 류 요청에 발동. 소관: 자율 goal 루프 지시문, 팀·멀티에이전트 작업지시 프롬프트, 시스템 프롬프트·자동화 잡, 직무 업무 프롬프트, 모델 튜닝·퇴고, UI/디자인 프롬프트, 이미지·배경합성·영상 프롬프트(gpt-image-2·Higgsfield/힉스필드) 정밀 컴파일. 산출 프롬프트는 붙여넣기 블록당 2000자 이내 실측, 이미지 계열은 경로 참조 없는 자기완결. 이미지·디자인 레퍼런스 분석 결과는 이 스킬이 생성 프롬프트로 컴파일하고, Higgsfield 인테이크·프리셋 라우팅은 higgsfield-prompt-bridge 선행 뒤 이 스킬로 컴파일한다. Higgsfield 프롬프트 작성과 실제 생성을 함께 요청하면 브리지가 컴파일 산출을 실행 스킬에 같은 흐름으로 넘기며 프롬프트 출력에서 멈추지 않는다. 런타임별 호출 문법·동반 스킬 매핑은 references/adapters.md를 따른다. 프롬프트 산출 없이 실제 코드 실행·이미지 생성·문서 조판만 원하는 요청은 이 스킬이 아니라 해당 실행 경로 소관."
-version: 2.5.0
+version: 2.5.1
 license: MIT
 metadata:
   category: prompt-writing
@@ -12,7 +12,7 @@ metadata:
   role_routing_reviewed_at: "2026-07-10"
 ---
 
-# Master Prompt Writer — 디스패치 커널
+# HeiTuzMPW — 디스패치 커널
 
 프롬프트는 지시서가 아니라 **위임 계약**이다. 실행자는 최상위급 추론의 고자율 실행자다 — 방법을 마이크로매니징하지 말고 결과·경계·검증을 계약으로 못 박는다. 이 스킬은 프롬프트 작성의 단일 진입점이며 어떤 에이전트 런타임에서도 동작한다. 런타임별 호출 문법·동반 스킬 매핑은 [references/adapters.md](references/adapters.md).
 
