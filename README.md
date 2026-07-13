@@ -75,6 +75,7 @@ GJC에서 검증된 방식 중 다른 런타임에서도 그대로 통하는 것
 - 한글 타이포와 카드뉴스 구조
 - 배경 합성용 프레임·정체성 고정 계약
 - JSONL 양산 규칙과 zero-dependency 검증기
+- Vision role map 기반 의류 폴더 핸드오프 컴파일러와 휴대 가능한 스키마
 - 이미지·영상 레인별 실패 조건과 검수 기준
 
 ## 30초 설치
@@ -139,6 +140,7 @@ npm run smoke:runtime
 - 프롬프트 예시의 실제 글자 수 확인
 - 블록당 2,000자 초과 차단
 - 이미지 프롬프트 good/bad fixture 16종 회귀 테스트
+- 의류 색상 정규화·전체 인벤토리·2,000자 실패-폐쇄 컴파일 테스트
 - 설치기 스모크 테스트
 - GitHub Actions에서도 같은 항목 검증
 
@@ -151,6 +153,8 @@ references/templates.md        모드별 골격과 출력 게이트
 references/model-playbooks.md  역할·권한 라우팅과 capability 플레이북
 references/image/              이미지 정밀 컴파일 계층
 references/adapters.md         런타임별 설치·호출 어댑터
+contracts/v1/                  휴대 가능한 의류 핸드오프 스키마·fixture
+scripts/compile_apparel_handoff.py  의류 폴더 핸드오프 컴파일러
 scripts/lint.py                스킬 자기 린트
 scripts/check_prompt.mjs       이미지 프롬프트 검증기
 scripts/install.mjs            npm/bun 설치기

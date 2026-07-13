@@ -9,7 +9,7 @@ jobs:
         with: { node-version: '22' }
       - name: skill self-lint
         run: python3 scripts/lint.py
-      - name: image prompt validator self-test
+      - name: full network-free test suite
         run: npm test
       - name: installer smoke test
         run: npm run smoke:install

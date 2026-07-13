@@ -1,6 +1,6 @@
 {
   "name": "heituzmpw",
-  "version": "2.6.1",
+  "version": "2.7.0",
   "description": "Runtime-agnostic prompt-writing agent skill installer.",
   "license": "MIT",
   "type": "module",
@@ -13,14 +13,16 @@
     "LICENSE",
     "README.md",
     "SKILL.md",
-
+    "contracts/**",
     "examples/**",
     "references/**",
     "scripts/**"
   ],
   "scripts": {
     "lint": "python3 scripts/lint.py",
-    "test": "node scripts/check_prompt.mjs --test && python3 scripts/test_promo_contract.py",
+    "test": "node scripts/check_prompt.mjs --test && python3 scripts/test_promo_contract.py && python3 scripts/test_compile_apparel_handoff.py",
+    "test:apparel": "python3 scripts/test_compile_apparel_handoff.py",
+    "test:promo": "python3 scripts/test_promo_contract.py",
     "smoke:install": "node scripts/install.mjs --dest /tmp/HeiTuzMPW-install-smoke --force --quiet",
     "smoke:runtime": "node scripts/smoke_runtime_installs.mjs"
   },

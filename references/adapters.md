@@ -6,6 +6,10 @@
 
 역할 책임과 capability 선택은 [model-playbooks.md](model-playbooks.md) §역할·권한 라우팅이 유일한 정본이다. 이 파일은 설치 위치, 런타임 역할 매핑, 실제 모델 선택 위치, per-role routing이 없을 때의 fallback만 기록한다. 실제 모델명과 로컬 선택값은 각 런타임의 설정 파일, CLI 옵션, 또는 사용자의 세션 설정에 두며 private local selector를 하드코딩하지 않는다.
 
+## 의류 핸드오프 소비자
+
+휴대 가능한 의류 생성 계약은 `contracts/v1/apparel-handoff.schema.json`이 정의한다. `python3 scripts/compile_apparel_handoff.py request.json --output handoff.json`으로 생성하며, 런타임은 네트워크 호출 없이 이 파일을 읽어 후보 작업을 준비한다. Hermes 설치에서는 `HeiTuzimgGen2`가 소비자이며, 핸드오프의 `unique_color_count`와 검증된 `vision_role_map`을 다시 확인한 뒤 동일한 전체 인벤토리를 가진 격리 작업을 만든다. 알 수 없는 버전이나 불일치는 자유형 프롬프트로 강등하지 않고 거부한다.
+
 
 ## Claude
 
