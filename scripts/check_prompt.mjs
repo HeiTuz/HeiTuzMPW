@@ -18,6 +18,9 @@ const REWRITE_MAP = {
   "no logo": "로고 없는 클린 마감", "no background": "단색 스튜디오 배경", "no blur": "엣지까지 또렷한 포커스",
   "no shadow": "균등광의 평면 조명", "without": "뺄 요소 대신 원하는 요소만 서술", "avoid": "피할 상태 대신 원하는 상태를 서술",
 };
+// 에디토리얼 뷰티 마감 불변식 (2026-07 컨셉-콜리전 그래머 §15 반영)
+const GLOW_TOKENS = [/\bdewy\b/i, /\bluminous skin\b/i, /subsurface (?:glow|sheen|scatter)/i, /\bglass skin\b/i, /\bwet[- ]?look\b/i, /\bhigh[- ]?shine\b/i, /\bglistening skin\b/i];
+const MATTE_QUALIFIER = /(matte|무광|매트|비유광|semi[- ]?matte|restrained sheen)/i;
 const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const err = (list, code, msg, hint) => list.push(hint ? { code, msg, hint } : { code, msg });
@@ -79,6 +82,16 @@ function checkNegatives(p, tier, renderText, errors) {
   }
 }
 
+
+function checkEditorialFinish(p, errors, warnings) {
+  if (/\b(?:micro[\s-]?skin texture|skin texture\s+ai|realistic skin\s+ai)\b/i.test(p))
+    err(errors, "E-SKIN-AI", "malformed 피부 토큰(micro·AI) — `natural skin texture, visible pores, fine vellus hair`처럼 관찰 결과로.");
+  if (/\byellow(?:ish)?\s+(?:undertone\s+)?skin\b/i.test(p) || /(?:노란|누런|황색)\s*피부/.test(p))
+    err(errors, "E-NAT-SKIN", "국적-피부 고정 톤(yellow skin 류) — 피부색은 국적이 아니라 관찰(hydrated base, flushed cheeks)로 쓴다.");
+  const glow = GLOW_TOKENS.filter((re) => re.test(p)).length;
+  if (glow >= 4 && !MATTE_QUALIFIER.test(p))
+    err(warnings, "W-GLOW-STACK", `피부 글로우 토큰 ${glow}종 적층 + 매트존 부재 — 주 글로우 1개 + 전략적 매트존으로 (§15.4).`);
+}
 function validateText(raw, opts = {}, rec = null) {
   const errors = [], warnings = [];
   const p = raw.replace(/^﻿/, "").trim();
@@ -118,6 +131,7 @@ function validateText(raw, opts = {}, rec = null) {
     err(warnings, "W-TEXT-GUARD", "텍스트가 있는데 가독성/반복 가드가 없음 (예: \"모든 텍스트는 한 번씩만, 또렷하게\").");
 
   checkNegatives(p, tier, renderText, errors);
+  checkEditorialFinish(p, errors, warnings);
 
   // ── 앞브래킷 / 슬롯 잔존 / SD 폐기 문법 (v1 유지) ──
   if (/^\[[^\]\n]*(\d+\s*:\s*\d+|SIZE|size)[^\]\n]*\]/.test(p.slice(0, 80))) err(errors, "E-HEAD-BRACKET", "앞머리 `[AR x:y SIZE wxh]` 브래킷 금지 — size는 API 파라미터, 프롬프트엔 끝의 `AR x:y`만.");

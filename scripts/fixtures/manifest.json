@@ -50,6 +50,13 @@
     }
   },
   {
+    "path": "fixtures/good/editorial_collision.txt",
+    "mode": "text",
+    "expect": {
+      "ok": true
+    }
+  },
+  {
     "path": "fixtures/bad/example_bad_poster.txt",
     "mode": "text",
     "expect": {
@@ -104,6 +111,17 @@
       "ok": false,
       "codes": [
         "E-SLOT-LEAK"
+      ]
+    }
+  },
+  {
+    "path": "fixtures/bad/editorial_stereotype.txt",
+    "mode": "text",
+    "expect": {
+      "ok": false,
+      "codes": [
+        "E-NAT-SKIN",
+        "E-SKIN-AI"
       ]
     }
   },

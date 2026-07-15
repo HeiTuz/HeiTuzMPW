@@ -11,7 +11,7 @@
 |---|---|
 | 카테고리별 컷타입·필수 디테일·DNA (C1~C12) | [categories.md](categories.md) |
 | 렌더 텍스트·레이아웃·내부 그리드·한글 정확도 레버 | [typography.md](typography.md) |
-| 화보 Format B·Tier-2 페어·패션 택소노미·포즈/조명/소재 어휘·한국 로컬리티·Soul 교차 | [editorial-fashion.md](editorial-fashion.md) |
+| 화보 Format B·Tier-2 페어·패션 택소노미·포즈/조명/소재 어휘·한국 로컬리티·컨셉-콜리전 그래머·Soul 교차 | [editorial-fashion.md](editorial-fashion.md) |
 | 무드→룩 프리셋·컨셉 변수 축·죽은 단어 환원 | [look-and-concept.md](look-and-concept.md) |
 | 정보성 C7 카드 vs 디자인 홍보물 분기·P1~P8 점진 로딩·promo 게이트 | [promo-router.md](promo-router.md) |
 | jsonl 스키마·배치/챕터·모델 팩트·검증기 에러 코드 | [production.md](production.md) |

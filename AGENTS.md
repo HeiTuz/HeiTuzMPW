@@ -19,7 +19,7 @@
 
 ```sh
 python3 scripts/lint.py               # 항상 — 라벨 실측·2000자·정본 단일성·유사문자
-node scripts/check_prompt.mjs --test  # references/image/ 또는 검증기 변경 시 — 16 fixtures
+node scripts/check_prompt.mjs --test  # references/image/ 또는 검증기 변경 시 — 18 fixtures
 ```
 
 검증기(`check_prompt.mjs`)와 문서 규칙이 어긋나면 어느 쪽이 맞는지 판정하고 한쪽을 고쳐 정렬한다 — 괴리를 남기는 게 최악이다(2026-07 캘리브레이션에서 헤더형 감지·조명 토큰 괴리를 이렇게 잡았다).
