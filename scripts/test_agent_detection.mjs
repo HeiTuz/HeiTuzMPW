@@ -34,7 +34,7 @@ assert.deepEqual(parseInteractiveAgentHosts("claude,codex", ["hermes"]), ["claud
 assert.deepEqual(parseInteractiveAgentHosts("all", ["hermes", "codex"]), ["hermes", "codex"]);
 assert.equal(parseArgs([]).target, "auto");
 assert.equal(parseArgs(["--", "--target", "gpt"]).target, "gpt");
-assert.equal(destinationForTarget(home, "gpt"), path.join(home, ".codex", "skills", "HeiTuzMPW"));
+assert.equal(destinationForTarget(home, "gpt"), path.join(home, ".codex", "skills", "MPW"));
 const installer = fileURLToPath(new URL("./install.mjs", import.meta.url));
 const unsafeHome = fs.mkdtempSync(path.join(os.tmpdir(), "mpw-unsafe-target-"));
 try {

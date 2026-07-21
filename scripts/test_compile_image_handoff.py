@@ -17,7 +17,7 @@ SPEC.loader.exec_module(MODULE)
 
 def request(**overrides):
     value = {
-        "schema_version": "heituz-image-production-request/v1",
+        "schema_version": "image-production-request/v2",
         "job_id": "catalog-01",
         "operation": "edit",
         "subject": "A ceramic cup with its exact logo preserved",
@@ -35,7 +35,7 @@ def request(**overrides):
 class CompileImageHandoffTests(unittest.TestCase):
     def test_emits_shared_portable_contract(self):
         result = MODULE.compile_request(request())
-        self.assertEqual(result["schema_version"], "heituz-image-production-handoff/v1")
+        self.assertEqual(result["schema_version"], "image-production-handoff/v2")
         self.assertEqual(result["input_images"][0]["path"], "assets/cup.png")
         self.assertIn("Subject: A ceramic cup", result["prompt"])
         self.assertLessEqual(len(result["prompt"]), 2000)

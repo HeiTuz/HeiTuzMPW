@@ -7,7 +7,7 @@
   "required": ["schema_version", "compiler_owner", "source_job_id", "garden_recipe_id", "garden_recipe_sha256", "prompt_bundle_id", "prompt_bundle_sha256", "adapter_options_sha256", "prior_final_prompt_sha256", "reference_digest", "retry_of", "retry_generation", "failed_axes", "failed_promo_checks", "reason_codes", "requested_delta_codes"],
   "properties": {
     "schema_version": {"const": "mpw-recompile-request/v1"},
-    "compiler_owner": {"const": "HeiTuzMPW"},
+    "compiler_owner": {"const": "MPW"},
     "source_job_id": {"$ref": "#/$defs/jobId"},
     "garden_recipe_id": {"type": "string", "pattern": "^gr_[A-Za-z0-9_-]{8,128}$"},
     "garden_recipe_sha256": {"$ref": "#/$defs/sha256"},

@@ -152,7 +152,7 @@ class CompileGardenRecipeTests(unittest.TestCase):
         recipe["exclusions"] = ["watermark"]
         bundle = self.compiler.compile_recipe(recipe)
         legacy = self.compiler.legacy_bridge_bundle(bundle)
-        self.assertEqual("HeiTuzMPW", legacy["compiled_by"])
+        self.assertEqual("MPW", legacy["compiled_by"])
         self.assertEqual(
             [block["text"] for block in bundle["handoff"]["prompt_blocks"]],
             [block["text"] for block in legacy["blocks"]],

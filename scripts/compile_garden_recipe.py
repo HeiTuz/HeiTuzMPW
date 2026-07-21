@@ -305,7 +305,7 @@ def compile_recipe(recipe: dict[str, Any]) -> dict[str, Any]:
 def legacy_bridge_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
     """Losslessly adapt v1 prompt blocks to the installed bridge's legacy shape."""
     return {
-        "compiled_by": "HeiTuzMPW",
+        "compiled_by": "MPW",
         "blocks": [
             {"text": block["text"]}
             for block in bundle["handoff"]["prompt_blocks"]

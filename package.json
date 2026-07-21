@@ -37,7 +37,7 @@
     "test:garden": "python3 scripts/test_compile_garden_recipe.py",
     "test:handoff": "python3 scripts/test_compile_image_handoff.py",
     "test:promo": "python3 scripts/test_promo_contract.py",
-    "smoke:install": "node scripts/install.mjs --dest /tmp/HeiTuzMPW-install-smoke --force --quiet",
+    "smoke:install": "node scripts/install.mjs --dest /tmp/MPW-install-smoke --force --quiet",
     "smoke:runtime": "node scripts/smoke_runtime_installs.mjs"
   },
   "engines": {

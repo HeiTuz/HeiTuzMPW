@@ -86,11 +86,11 @@ function checkLinks(destination, relative) {
 }
 
 function destination(home, target) {
-  if (target === "hermes") return path.join(home, ".hermes", "skills", "prompt-writing", "HeiTuzMPW");
-  if (target === "claude") return path.join(home, ".claude", "skills", "HeiTuzMPW");
-  if (target === "gjc") return path.join(home, ".gjc", "agent", "skills", "HeiTuzMPW");
-  if (target === "agents") return path.join(home, ".agents", "skills", "HeiTuzMPW");
-  return path.join(home, ".codex", "skills", "HeiTuzMPW");
+  if (target === "hermes") return path.join(home, ".hermes", "skills", "prompt-writing", "MPW");
+  if (target === "claude") return path.join(home, ".claude", "skills", "MPW");
+  if (target === "gjc") return path.join(home, ".gjc", "agent", "skills", "MPW");
+  if (target === "agents") return path.join(home, ".agents", "skills", "MPW");
+  return path.join(home, ".codex", "skills", "MPW");
 }
 
 function overlayHost(target) {

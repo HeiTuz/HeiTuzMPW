@@ -1,5 +1,5 @@
 ---
-name: HeiTuzMPW
+name: MPW
 description: "프롬프트 작성·퇴고·라우팅 전용 통합 스킬 — '프롬프트 만들어줘/다듬어줘/검토해줘' 류 요청에 발동. 소관: 자율 goal 루프 지시문, 팀·멀티에이전트 작업지시 프롬프트, 시스템 프롬프트·자동화 잡, 직무 업무 프롬프트, 모델 튜닝·퇴고, UI/디자인 프롬프트, 이미지·배경합성·영상 프롬프트(gpt-image-2·Higgsfield/힉스필드) 정밀 컴파일. 산출 프롬프트는 붙여넣기 블록당 2000자 이내 실측, 이미지 계열은 경로 참조 없는 자기완결. 이미지·디자인 레퍼런스 분석 결과를 생성 프롬프트로 컴파일하며, 런타임별 호출 문법은 references/adapters.md를 따른다. 프롬프트 산출 없이 실제 코드 실행·이미지 생성·문서 조판만 원하는 요청은 이 스킬이 아니라 해당 실행 경로 소관."
 version: 2.14.0
 license: MIT
@@ -8,15 +8,15 @@ metadata:
   locale: ko-KR
   doctrine: unified-delegation-contract
   host_surface: codex
-  canonical_source: "HeiTuz/HeiTuzMPW SKILL.md v2.14.0"
+  canonical_source: "HeiTuz/MPW SKILL.md v2.14.0"
   updated_at: "2026-07-20"
   model_claims_reviewed_at: "2026-07-07"
   role_routing_reviewed_at: "2026-07-10"
 ---
 
-# HeiTuzMPW — 디스패치 커널 (GPT/Codex 표면)
+# MPW — 디스패치 커널 (GPT/Codex 표면)
 
-> **호스트 통합 — GPT/Codex.** 이 파일은 Codex 설치본(`~/.codex/skills/HeiTuzMPW`, `--target codex`와 `--target gpt` 동일)의 진입 표면이다. 규칙 본문은 정본 SKILL.md와 동일하며, 호스트 통합 표면(프런트매터·발동·도구 명칭)만 마이그레이션됐다.
+> **호스트 통합 — GPT/Codex.** 이 파일은 Codex 설치본(`~/.codex/skills/MPW`, `--target codex`와 `--target gpt` 동일)의 진입 표면이다. 규칙 본문은 정본 SKILL.md와 동일하며, 호스트 통합 표면(프런트매터·발동·도구 명칭)만 마이그레이션됐다.
 > - **발동**: Codex가 skills 디렉터리에서 이 SKILL.md를 발견해 로드한다. 이 디렉터리의 AGENTS.md는 설치본 안내 표면이다 — 리포지토리 기여 규칙이 아니다.
 > - **도구 매핑**: 길이 실측(`wc -m`)·검증기(`node scripts/check_prompt.mjs`)·컴파일러(`python3 scripts/compile_*.py`)·references/ 확인은 전부 Codex shell로 실행한다.
 > - **역할 라우팅**: Codex coding surface는 prime으로 운용한다. native subagent가 가능하면 [references/adapters.md](references/adapters.md) §GPT/Codex 매핑(planner=read-only planning, worker=bounded implementation, critic=independent verifier)을 따른다.

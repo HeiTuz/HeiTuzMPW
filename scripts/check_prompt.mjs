@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// HeiTuzMPW 이미지 프롬프트 검증기 (gpt-image-2 레인) — SPEC-FREEZE-v2 동결 스펙 준수. zero-dependency Node ESM.
+// MPW 이미지 프롬프트 검증기 (gpt-image-2 레인) — SPEC-FREEZE-v2 동결 스펙 준수. zero-dependency Node ESM.
 // 사용: node check_prompt.mjs <file> (stdin 파이프 가능) | --jsonl <file> | --tier <0|1|2> | --api | --test
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";

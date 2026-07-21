@@ -9,8 +9,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import urlparse
 
-REQUEST_VERSION = "heituz-image-production-request/v1"
-HANDOFF_VERSION = "heituz-image-production-handoff/v1"
+REQUEST_VERSION = "image-production-request/v2"
+HANDOFF_VERSION = "image-production-handoff/v2"
 MAX_PROMPT_CHARS = 2000
 MAX_NEGATIVE_CHARS = 1000
 JOB_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")

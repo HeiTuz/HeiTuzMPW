@@ -150,7 +150,7 @@ def compile_request(request: Any) -> dict[str, Any]:
         "vision_role_map": role_map,
         "normalized_color_identity": colors,
         "unique_color_count": len(colors),
-        "heituzmpw_folder_master": (
+        "mpw_folder_master": (
             "Compile one coherent apparel family from the complete source inventory and validated Vision role map. "
             f"Authoritative front colors: {color_list}. Preserve source-supported construction, material, trim, print, "
             "color, scale, framing, and view relationships. Reconstruct only source-supported hidden areas."

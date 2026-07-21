@@ -6,7 +6,7 @@
 
 소스 레포가 편집 권한을 가진다. `~/.hermes/skills/...` 같은 설치본은 배포 산출물이며 직접 수정하지 않는다. 설치본 전용 변경이 발견되면 먼저 해당 소스 레포로 분리·검토한 뒤 배포한다. 계약 갱신 순서는 다음과 같다.
 
-1. `HeiTuzMPW/contracts/`에서 스키마·검증기·fixture를 함께 변경한다.
+1. `MPW/contracts/`에서 스키마·검증기·fixture를 함께 변경한다.
 2. manifest SHA-256을 갱신하고 `python3 scripts/test_contracts.py`를 통과한다.
 3. `python3 scripts/sync_contracts.py --sync --dest <contract-mirror>`로 각 독립 소스·가드너 미러에 동기화한다.
 4. 각 스킬의 기존 설치 절차로 소스 전체를 설치본에 배포한다. 정본에서 설치본으로 역복사하지 않는다.

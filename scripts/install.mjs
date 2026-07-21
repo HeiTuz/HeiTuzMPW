@@ -15,7 +15,7 @@ import {
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "..");
-const skillName = "HeiTuzMPW";
+const skillName = "MPW";
 const legacyTargets = new Set(["gjc", "agents"]);
 const knownTargets = new Set(["auto", "all", "hermes", "claude", "codex", "gpt", ...legacyTargets]);
 
@@ -31,13 +31,13 @@ export function destinationForTarget(homeDir, target) {
 
 function usage(exitCode = 0) {
   const out = exitCode === 0 ? console.log : console.error;
-  out(`HeiTuzMPW installer
+  out(`MPW installer
 
 Usage:
-  npx --yes github:HeiTuz/HeiTuzMPW
-  bunx github:HeiTuz/HeiTuzMPW --target codex
+  npx --yes github:HeiTuz/MPW
+  bunx github:HeiTuz/MPW --target codex
   node scripts/install.mjs --target all
-  node scripts/install.mjs --dest /custom/skills/HeiTuzMPW
+  node scripts/install.mjs --dest /custom/skills/MPW
 
 Options:
   --target <auto|all|hermes|codex|gpt|claude|gjc|agents>
@@ -359,7 +359,7 @@ function isMainModule() {
 
 if (isMainModule()) {
   main().catch((error) => {
-    console.error(`HeiTuzMPW installer: ${error.message}`);
+    console.error(`MPW installer: ${error.message}`);
     process.exitCode = 1;
   });
 }

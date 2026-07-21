@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""HeiTuzMPW self-lint.
+"""MPW self-lint.
 
 Checks the skill's own hardlines against its files:
 - every measured-length label — "(N자 실측)" / "실측: N자" / "N자 실측" / bare "(…, N자)"

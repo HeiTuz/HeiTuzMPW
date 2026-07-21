@@ -1,16 +1,16 @@
-# HeiTuzMPW
+# MPW
 
 ## AI에게 말은 그만 시키고, **결과를 내게 만드세요.**
 
-[![Release](https://img.shields.io/github/v/release/HeiTuz/HeiTuzMPW?style=flat-square)](https://github.com/HeiTuz/HeiTuzMPW/releases/latest)
-[![CI](https://img.shields.io/github/actions/workflow/status/HeiTuz/HeiTuzMPW/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/HeiTuz/HeiTuzMPW/actions)
+[![Release](https://img.shields.io/github/v/release/HeiTuz/MPW?style=flat-square)](https://github.com/HeiTuz/MPW/releases/latest)
+[![CI](https://img.shields.io/github/actions/workflow/status/HeiTuz/MPW/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/HeiTuz/MPW/actions)
 [![License: MIT](https://img.shields.io/badge/license-MIT-black?style=flat-square)](LICENSE)
 
-**HeiTuzMPW**는 “대충 잘해줘”를 결과물, 검증, 완료 기준이 박힌 실행 지시로 바꿉니다.
+**MPW**는 “대충 잘해줘”를 결과물, 검증, 완료 기준이 박힌 실행 지시로 바꿉니다.
 
 긴 프롬프트보다 중요한 건 끝난 작업입니다.
 
-코드는 테스트를 통과하고, 리서치는 결론을 만들고, 콘텐츠는 바로 쓸 수 있어야 합니다. HeiTuzMPW는 짧은 요청 하나를 **실행, 검증, 완료까지 밀어붙이는 프롬프트**로 컴파일합니다.
+코드는 테스트를 통과하고, 리서치는 결론을 만들고, 콘텐츠는 바로 쓸 수 있어야 합니다. MPW는 짧은 요청 하나를 **실행, 검증, 완료까지 밀어붙이는 프롬프트**로 컴파일합니다.
 
 ## 요청 한 줄이 실제 결과로 바뀝니다
 
@@ -24,7 +24,7 @@
 
 기획, 구현, 리뷰, 검증이 서로 다른 목표를 쫓으면 에이전트가 많을수록 더 빨리 망가집니다.
 
-HeiTuzMPW는 역할과 경계를 정리해 **여러 에이전트가 하나의 결과물을 향해 움직이게** 합니다. 누가 판단하고, 누가 실행하고, 무엇으로 최종 판정할지 처음부터 못 박습니다.
+MPW는 역할과 경계를 정리해 **여러 에이전트가 하나의 결과물을 향해 움직이게** 합니다. 누가 판단하고, 누가 실행하고, 무엇으로 최종 판정할지 처음부터 못 박습니다.
 
 ### 리서치를 읽을거리에서 결정 도구로 바꿉니다
 
@@ -65,9 +65,9 @@ python3 scripts/compile_image_variations.py --request request.json --count 100 -
 한 줄이면 설치기가 이 컴퓨터의 에이전트 환경을 자동 감지해 맞는 위치에 설치합니다.
 
 ```sh
-npx --yes github:HeiTuz/HeiTuzMPW
+npx --yes github:HeiTuz/MPW
 # 또는
-bunx github:HeiTuz/HeiTuzMPW
+bunx github:HeiTuz/MPW
 ```
 
 ### 자동 감지가 하는 일
@@ -81,22 +81,22 @@ bunx github:HeiTuz/HeiTuzMPW
 
 | 대상 | 설치 위치 | payload |
 |---|---|---|
-| `hermes` (기본·권장) | `~/.hermes/skills/prompt-writing/HeiTuzMPW` | 정본 Hermes-native 표면 |
-| `claude` | `~/.claude/skills/HeiTuzMPW` | **Claude Code용 마이그레이션 표면** |
-| `codex` / `gpt` | `~/.codex/skills/HeiTuzMPW` | **GPT/Codex용 마이그레이션 표면** |
-| `gjc` | `~/.gjc/agent/skills/HeiTuzMPW` | 정본 표면 |
-| `agents` | `~/.agents/skills/HeiTuzMPW` | 정본 표면 |
+| `hermes` (기본·권장) | `~/.hermes/skills/prompt-writing/MPW` | 정본 Hermes-native 표면 |
+| `claude` | `~/.claude/skills/MPW` | **Claude Code용 마이그레이션 표면** |
+| `codex` / `gpt` | `~/.codex/skills/MPW` | **GPT/Codex용 마이그레이션 표면** |
+| `gjc` | `~/.gjc/agent/skills/MPW` | 정본 표면 |
+| `agents` | `~/.agents/skills/MPW` | 정본 표면 |
 
 Hermes가 기본·선호 환경입니다. Claude Code와 Codex는 규칙 본문이 동일한 채 호스트 통합 표면(발동·도구 명칭·frontmatter)만 마이그레이션된 변형을 받습니다 — 구조와 근거는 [agents/README.md](agents/README.md).
 
 ### 명시 설치
 
 ```sh
-npx --yes github:HeiTuz/HeiTuzMPW -- --target hermes
-npx --yes github:HeiTuz/HeiTuzMPW -- --target claude
-npx --yes github:HeiTuz/HeiTuzMPW -- --target codex     # --target gpt 동일
-npx --yes github:HeiTuz/HeiTuzMPW -- --target all       # 감지된 전부에 설치
-npx --yes github:HeiTuz/HeiTuzMPW -- --dest /custom/skills/HeiTuzMPW
+npx --yes github:HeiTuz/MPW -- --target hermes
+npx --yes github:HeiTuz/MPW -- --target claude
+npx --yes github:HeiTuz/MPW -- --target codex     # --target gpt 동일
+npx --yes github:HeiTuz/MPW -- --target all       # 감지된 전부에 설치
+npx --yes github:HeiTuz/MPW -- --dest /custom/skills/MPW
 ```
 
 재설치는 `--force`, 조용한 설치는 `--quiet`. `--target auto`는 기본 동작인 자동 감지를 명시적으로 켭니다.
@@ -104,27 +104,27 @@ npx --yes github:HeiTuz/HeiTuzMPW -- --dest /custom/skills/HeiTuzMPW
 ### 이미지 제작까지 한 번에 붙일 때: 추천
 
 ```sh
-npx --yes --package github:HeiTuz/HeiTuzImgGen2 heituz-imggen2
+npx --yes --package github:HeiTuz/ImgGen2 heituz-imggen2
 # 또는
-bunx --package github:HeiTuz/HeiTuzImgGen2 heituz-imggen2
+bunx --package github:HeiTuz/ImgGen2 heituz-imggen2
 ```
 
-이 unified 설치는 **공식 Codex CLI + HeiTuzImgGen2 + HeiTuzMPW**를 함께 세팅합니다. 같은 자동 감지를 쓰며, ImgGen2와 MPW는 항상 같은 호스트에 나란히 설치됩니다 — ImgGen2는 Hermes에, MPW는 다른 곳에 가는 어긋남이 없습니다. 이후에는 아래 한 줄로 둘 다 갱신합니다.
+이 unified 설치는 **공식 Codex CLI + ImgGen2 + MPW**를 함께 세팅합니다. 같은 자동 감지를 쓰며, ImgGen2와 MPW는 항상 같은 호스트에 나란히 설치됩니다 — ImgGen2는 Hermes에, MPW는 다른 곳에 가는 어긋남이 없습니다. 이후에는 아래 한 줄로 둘 다 갱신합니다.
 
 ```sh
-heituz update
+imggen update
 ```
 
 ### 직접 설치
 
 ```sh
-REPO=https://github.com/HeiTuz/HeiTuzMPW.git
+REPO=https://github.com/HeiTuz/MPW.git
 
 hermes skills install "$REPO" --category prompt-writing
-git clone "$REPO" ~/.codex/skills/HeiTuzMPW
-git clone "$REPO" ~/.claude/skills/HeiTuzMPW
-git clone "$REPO" ~/.gjc/agent/skills/HeiTuzMPW
-git clone "$REPO" ~/.agents/skills/HeiTuzMPW
+git clone "$REPO" ~/.codex/skills/MPW
+git clone "$REPO" ~/.claude/skills/MPW
+git clone "$REPO" ~/.gjc/agent/skills/MPW
+git clone "$REPO" ~/.agents/skills/MPW
 ```
 
 git clone은 정본 표면을 그대로 복사합니다. Claude·Codex용 마이그레이션 표면까지 적용하려면 installer를 쓰세요.
@@ -156,7 +156,7 @@ git clone은 정본 표면을 그대로 복사합니다. Claude·Codex용 마이
 
 **실행할 수 있는 지시, 확인할 수 있는 결과, 완료를 증명하는 근거.**
 
-HeiTuzMPW는 AI의 답변을 작업 결과로 바꿉니다.
+MPW는 AI의 답변을 작업 결과로 바꿉니다.
 
 ## License
 

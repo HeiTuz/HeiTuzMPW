@@ -12,7 +12,7 @@
     "vision_role_map",
     "normalized_color_identity",
     "unique_color_count",
-    "heituzmpw_folder_master",
+    "mpw_folder_master",
     "qc_contract",
     "outputs"
   ],
@@ -49,7 +49,7 @@
       "items": {"type": "string", "minLength": 1}
     },
     "unique_color_count": {"type": "integer", "minimum": 1},
-    "heituzmpw_folder_master": {"type": "string", "minLength": 1},
+    "mpw_folder_master": {"type": "string", "minLength": 1},
     "qc_contract": {"type": "string", "minLength": 1},
     "outputs": {
       "type": "array",

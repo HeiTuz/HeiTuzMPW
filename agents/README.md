@@ -1,6 +1,6 @@
 # agents/ — 호스트별 배포 오버레이
 
-이 폴더는 HeiTuzMPW의 **호스트별 설치 오버레이**다. 저장소 루트(SKILL.md + references/ + scripts/ + contracts/ + examples/)가 유일한 정본이며, 각 호스트 폴더는 그 위에 얹는 최소 진입/안내 표면만 담는다 — 저장소 전체 포크가 아니다.
+이 폴더는 MPW의 **호스트별 설치 오버레이**다. 저장소 루트(SKILL.md + references/ + scripts/ + contracts/ + examples/)가 유일한 정본이며, 각 호스트 폴더는 그 위에 얹는 최소 진입/안내 표면만 담는다 — 저장소 전체 포크가 아니다.
 
 ## 설치 모델
 
