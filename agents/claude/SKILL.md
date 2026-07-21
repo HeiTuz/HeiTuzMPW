@@ -1,15 +1,15 @@
 ---
 name: MPW
 description: "프롬프트 작성·퇴고·라우팅 전용 통합 스킬 — '프롬프트 만들어줘/다듬어줘/검토해줘' 류 요청에 발동. 소관: 자율 goal 루프 지시문, 팀·멀티에이전트 작업지시 프롬프트, 시스템 프롬프트·자동화 잡, 직무 업무 프롬프트, 모델 튜닝·퇴고, UI/디자인 프롬프트, 이미지·배경합성·영상 프롬프트(gpt-image-2·Higgsfield/힉스필드) 정밀 컴파일. 산출 프롬프트는 붙여넣기 블록당 2000자 이내 실측, 이미지 계열은 경로 참조 없는 자기완결. 이미지·디자인 레퍼런스 분석 결과를 생성 프롬프트로 컴파일하며, 런타임별 호출 문법은 references/adapters.md를 따른다. 프롬프트 산출 없이 실제 코드 실행·이미지 생성·문서 조판만 원하는 요청은 이 스킬이 아니라 해당 실행 경로 소관."
-version: 2.14.0
+version: 2.14.1
 license: MIT
 metadata:
   category: prompt-writing
   locale: ko-KR
   doctrine: unified-delegation-contract
   host_surface: claude
-  canonical_source: "HeiTuz/MPW SKILL.md v2.14.0"
-  updated_at: "2026-07-20"
+  canonical_source: "HeiTuz/MPW SKILL.md v2.14.1"
+  updated_at: "2026-07-22"
   model_claims_reviewed_at: "2026-07-07"
   role_routing_reviewed_at: "2026-07-10"
 ---
