@@ -96,22 +96,24 @@ jsonl 레코드로 쓸 때:
 - 미감 어휘를 사용하고 해부학/클리니컬 어휘는 쓰지 않는다. 이미지 첨부 없이 텍스트만으로 작성한다.
 ## 12. Format B ↔ Higgsfield Soul 교차 규칙
 
-같은 화보 요청이라도 표면이 다르면 어휘를 변환한다. **gpt-image-2 Format B**로 갈 때는 슬롯 순서, 끝 `AR x:y`, HEX 3~5, Tier-2 assert/tail 페어, 장르앵커를 유지하고 사진 장비는 결과 기반 lens character로 압축한다. **Higgsfield Soul**로 갈 때는 6섹션 장문이 아니라 1문단으로 줄이고, `[프리셋: X · 비율 2:3 — UI에서 선택]` 라벨을 본문 밖에 둔다. 전역 팔레트·무드·컬러 그레이드는 Soul 2.0 웹 `Color signature`에 레퍼런스 1~20장을 넣어 전달하며, 대상별 역할형 HEX 3~5를 Soul 프롬프트 기본값으로 강제하지 않는다. Soul은 텍스트 렌더 정확도에 의존하지 않으므로 카피가 필요하면 gpt-image-2 컷으로 분리한다. 동일 인물 시리즈는 Soul ID 훈련 절차의 영역이므로 프롬프트에서 외모 반복으로 정체성을 고정하려 들지 않고, 장면·스타일·행동만 쓴다. 공통으로 자기완결, 2000자, 긍정형 재서술, `natural skin texture, visible pores, subtle film grain`, 실재 인물/상표 금지를 지킨다.
+같은 화보 요청이라도 표면이 다르면 어휘를 변환한다. **gpt-image-2 Format B**로 갈 때는 슬롯 순서, 끝 `AR x:y`, HEX 3~5, Tier-2 assert/tail 페어, 장르앵커를 유지하고 사진 장비는 결과 기반 lens character로 압축한다. **Higgsfield Soul V2**로 갈 때는 6섹션 장문이 아니라 [../soul-v2-director.md](../soul-v2-director.md)의 4레이어 고정 순서(피사체·의상·동작·구도 → 미학·브랜드 앵커·환경 → 조명·그림자 → 카메라·렌즈·질감)를 따르는 콤마 명사구 1문단으로 줄이고, `[프리셋: X · 비율 — UI에서 선택]` 라벨을 본문 밖에 둔다. 빈 품질어는 보이는 특성 토큰으로 치환하고 카메라 바디 1·주 렌즈 1을 지킨다. 전역 팔레트·무드·컬러 그레이드는 Soul 2.0 웹 `Color signature`에 레퍼런스 1~20장을 넣어 전달하며, 대상별 역할형 HEX 3~5를 Soul 프롬프트 기본값으로 강제하지 않는다. Soul은 텍스트 렌더 정확도에 의존하지 않으므로 카피가 필요하면 gpt-image-2 컷으로 분리한다. 동일 인물 시리즈는 Soul ID 훈련 절차의 영역이므로 프롬프트에서 외모 반복으로 정체성을 고정하려 들지 않고, 장면·스타일·행동만 쓴다. 브랜드: Format B는 가상 컬렉션·가상 라벨 유지, Soul 레인은 디자인 앵커로 주1+보조1까지 허용하되 로고·텍스트 렌더와 의복 구조 치환은 금지. 공통으로 자기완결, 2000자, 긍정형 재서술, `natural skin texture, visible pores, subtle film grain`, 실재 인물 금지를 지킨다.
 
 | 요청 요소 | Format B 변환 | Soul 변환 |
 |---|---|---|
 | 비율 | 끝에 `AR 2:3` | `[프리셋: Flash Editorial · 비율 2:3 — UI에서 선택]` 라벨 |
 | 장르 | `한국 남성지풍 클린 화보 컷` 슬롯 | 프리셋 + `fashion editorial still` 성격만 본문에 |
 | 안전 | Tier-2면 assert 첫 절 + tail AR 직전 | 긍정형 안전 스타일링 문장. 고정 tail을 본문에 억지 삽입하지 않음 |
-| 조명 | `부드러운 창가 자연광이 왼쪽에서...` 같은 결과 절 | `soft window light from camera left` 중심의 짧은 1문단 |
+| 조명 | `부드러운 창가 자연광이 왼쪽에서...` 같은 결과 절 | L3 골격: `direct on-camera flash, rapid highlight falloff, dense background shadow` 식 키라이트 방향·경도 명시 |
 | 팔레트 | HEX 3~5 + 장면 팔레트 절 | `Color signature` 레퍼런스 1~20장으로 전역 톤 전달. 필요 시 `observed_palette` 3~5개는 soft handoff/QC metadata만 |
+| 브랜드 | 가상 컬렉션·가상 라벨 | 디자인 앵커 ≤1+1 (매핑: [../soul-v2-director.md](../soul-v2-director.md)), 로고 렌더 금지 |
+| 카메라·질감 | 장비명 대신 lens character | L4에 바디 1·렌즈 1·필름 색 반응·소재 질감 명시 (선택 로직: [../soul-v2-director.md](../soul-v2-director.md)) |
 | 텍스트 | 필요 시 gpt-image-2 텍스트 렌더 가드 사용 | 텍스트 비의존. 카피 컷 분리 |
 
-Soul 스틸 예시 형식:
+Soul 스틸 예시 형식 (4레이어: L1 피사체·의상·포즈·구도 → L2 미학·환경 → L3 조명 → L4 카메라·필름·질감):
 
 ```text
 [프리셋: Flash Editorial · 비율 2:3 | Color signature: cool urban night reference 1장 — UI에서 선택/업로드]
-late-20s Korean woman, 짧은 웨이브 단발, 무광 블랙 레더 재킷에 실버 이어커프, 밤의 도심 주차장 콘크리트 기둥 앞에 단독으로 서서 카메라를 정면으로 응시. direct on-camera flash 특유의 강한 정면광, 뒤로 짙게 떨어지는 그림자, 배경은 어두운 콘크리트 톤으로 정리. natural skin texture, visible pores, subtle film grain.
+late-20s Korean woman, 짧은 웨이브 단발, 무광 블랙 레더 재킷에 실버 이어커프, 밤의 도심 주차장 콘크리트 기둥 앞에 단독으로 서서 카메라를 정면으로 응시, three-quarter 구도 아이레벨, Y2K street snap 무드, 어두운 콘크리트와 소듐등 톤 배경, direct on-camera flash 특유의 강한 정면광과 rapid highlight falloff, 뒤로 짙게 떨어지는 dense shadow, Contax G2, 35mm lens, Fujifilm Superia 400 color response, cracked patent leather reflections, natural skin texture, visible pores, subtle film grain.
 ```
 ## 14. 작성 체크리스트
 
